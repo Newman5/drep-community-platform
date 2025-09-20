@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  walletId  String   @unique
+  email     String?  @unique
+  name      String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // DRep related fields
+  isDRep        Boolean @default(false)
+  drepTitle     String?
+  drepBio       String?
+  drepWebsite   String?
+  
+  // Relations
+  proposalsSubmitted Proposal[] @relation("ProposalSubmitter")
+  votes              Vote[]
+  drepDelegations    DRepDelegation[] @relation("DRepDelegate")
+  userDelegations    DRepDelegation[] @relation("DelegatingUser")
+
+  @@map("users")
+}
+
+model Proposal {
+  id               String   @id @default(cuid())
+  externalId       String   @unique // e.g., "PROP-2025-001"
+  title            String
+  description      String
+  category         ProposalCategory
+  status           ProposalStatus
+  requestedAmount  String
+  submissionDate   DateTime
+  votingDeadline   DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  submitterId String
+  submitter   User   @relation("ProposalSubmitter", fields: [submitterId], references: [id])
+  votes       Vote[]
+
+  @@map("proposals")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  choice    VoteChoice
+  rationale String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId     String
+  proposalId String
+  user       User     @relation(fields: [userId], references: [id])
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+
+  // Ensure one vote per user per proposal
+  @@unique([userId, proposalId])
+  @@map("votes")
+}
+
+model DRepDelegation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+
+  // Relations
+  userId String
+  drepId String
+  user   User   @relation("DelegatingUser", fields: [userId], references: [id])
+  drep   User   @relation("DRepDelegate", fields: [drepId], references: [id])
+
+  // Ensure one active delegation per user
+  @@unique([userId, isActive])
+  @@map("drep_delegations")
+}
+
+model GovernanceEvent {
+  id          String            @id @default(cuid())
+  type        GovernanceEventType
+  title       String
+  description String?
+  eventDate   DateTime
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("governance_events")
+}
+
+enum ProposalCategory {
+  INFO_ACTION
+  PARAMETER_CHANGE
+  TREASURY_WITHDRAWAL
+  HARD_FORK_INITIATION
+  UPDATE_COMMITTEE
+  NEW_CONSTITUTION
+  NO_CONFIDENCE
+
+  @@map("proposal_category")
+}
+
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  REJECTED
+  EXPIRED
+
+  @@map("proposal_status")
+}
+
+enum VoteChoice {
+  YES
+  NO
+  ABSTAIN
+
+  @@map("vote_choice")
+}
+
+enum GovernanceEventType {
+  PROPOSAL_SUBMITTED
+  VOTING_STARTED
+  VOTING_ENDED
+  PROPOSAL_RATIFIED
+  PROPOSAL_REJECTED
+  DREP_REGISTERED
+  DELEGATION_CHANGED
+
+  @@map("governance_event_type")
+}
