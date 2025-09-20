@@ -139,21 +139,21 @@ export async function getProposalById(externalId: string): Promise<ProposalWithR
 
 function formatCategoryName(category: ProposalCategory): string {
   switch (category) {
-    case 'INFO_ACTION':
+    case 'info_action':
       return 'Info Action'
-    case 'PARAMETER_CHANGE':
+    case 'parameter_change':
       return 'Parameter Change'
-    case 'TREASURY_WITHDRAWAL':
+    case 'treasury_withdrawals':
       return 'Treasury Withdrawals'
-    case 'HARD_FORK_INITIATION':
+    case 'hard_fork_initiation':
       return 'Hard Fork Initiation'
-    case 'UPDATE_COMMITTEE':
+    case 'new_committee':
       return 'New Committee'
-    case 'NEW_CONSTITUTION':
+    case 'new_constitution':
       return 'New Constitution'
-    case 'NO_CONFIDENCE':
+    case 'no_confidence':
       return 'No Confidence'
-    default:
+    default:  
       return category
   }
 }

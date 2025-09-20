@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AllProposals {
+  id       String           @unique
+  category ProposalCategory
+  expired  Boolean
+}
+
 model User {
   id        String   @id @default(cuid())
   walletId  String   @unique
@@ -17,13 +23,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   // DRep related fields
-  isDRep        Boolean @default(false)
-  drepTitle     String?
-  drepBio       String?
-  drepWebsite   String?
-  
+  isDRep      Boolean @default(false)
+  drepTitle   String?
+  drepBio     String?
+  drepWebsite String?
+
   // Relations
-  proposalsSubmitted Proposal[] @relation("ProposalSubmitter")
+  proposalsSubmitted Proposal[]       @relation("ProposalSubmitter")
   votes              Vote[]
   drepDelegations    DRepDelegation[] @relation("DRepDelegate")
   userDelegations    DRepDelegation[] @relation("DelegatingUser")
@@ -32,17 +38,17 @@ model User {
 }
 
 model Proposal {
-  id               String   @id @default(cuid())
-  externalId       String   @unique // e.g., "PROP-2025-001"
-  title            String
-  description      String
-  category         ProposalCategory
-  status           ProposalStatus
-  requestedAmount  String
-  submissionDate   DateTime
-  votingDeadline   DateTime
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              String           @id @default(cuid())
+  externalId      String           @unique // e.g., "PROP-2025-001"
+  title           String
+  description     String
+  category        ProposalCategory
+  status          ProposalStatus
+  requestedAmount String
+  submissionDate  DateTime
+  votingDeadline  DateTime
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   // Relations
   submitterId String
@@ -53,11 +59,11 @@ model Proposal {
 }
 
 model Vote {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   choice    VoteChoice
   rationale String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   // Relations
   userId     String
@@ -88,25 +94,25 @@ model DRepDelegation {
 }
 
 model GovernanceEvent {
-  id          String            @id @default(cuid())
+  id          String              @id @default(cuid())
   type        GovernanceEventType
   title       String
   description String?
   eventDate   DateTime
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 
   @@map("governance_events")
 }
 
 enum ProposalCategory {
-  INFO_ACTION
-  PARAMETER_CHANGE
-  TREASURY_WITHDRAWAL
-  HARD_FORK_INITIATION
-  UPDATE_COMMITTEE
-  NEW_CONSTITUTION
-  NO_CONFIDENCE
+  info_action
+  parameter_change
+  treasury_withdrawals
+  hard_fork_initiation
+  new_committee
+  new_constitution
+  no_confidence
 
   @@map("proposal_category")
 }
