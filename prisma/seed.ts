@@ -95,36 +95,24 @@ async function main() {
   // Create proposals based on the mock data
   const proposals = [
     {
-      externalId: "PROP-2025-001",
-      title: "89e3a4f09122d669d6f6c82dd894e02826e8497be7eb036233bafc0ee4fc6665#0",
-      description: "Develop comprehensive DRep tools and educational resources to help community members understand and participate in Cardano governance more effectively.",
+      id: "89e3a4f09122d669d6f6c82dd894e02826e8497be7eb036233bafc0ee4fc6665#0",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
-      requestedAmount: "150,000 ADA",
       submitterId: gimbalabsUser.id,
-      submissionDate: new Date("2025-09-15"),
       votingDeadline: new Date("2025-10-15"),
     },
     {
-      externalId: "PROP-2025-002",
-      title: "e5643c33f608642e329228a968770e5b19ef5f48ff1f698712e2ce864a49e3f0#0",
-      description: "Establish a recurring funding program for community-organized Cardano events, meetups, and educational workshops worldwide.",
+      id: "e5643c33f608642e329228a968770e5b19ef5f48ff1f698712e2ce864a49e3f0#0",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
-      requestedAmount: "500,000 ADA",
       submitterId: cardanoFoundationUser.id,
-      submissionDate: new Date("2025-09-10"),
       votingDeadline: new Date("2025-10-10"),
     },
     {
-      externalId: "PROP-2025-003",
-      title: "996edfe370b8e51be73541e75499a818461305e37c7fa0c1b193f2c587167cc7#0",
-      description: "Fund research into sustainable blockchain technologies and carbon-neutral solutions for the Cardano ecosystem.",
+      id: "996edfe370b8e51be73541e75499a818461305e37c7fa0c1b193f2c587167cc7#0",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
-      requestedAmount: "300,000 ADA",
       submitterId: greenCardanoUser.id,
-      submissionDate: new Date("2025-09-05"),
       votingDeadline: new Date("2025-10-05"),
     }
   ]
@@ -133,7 +121,7 @@ async function main() {
 
   for (const proposalData of proposals) {
     await prisma.proposal.upsert({
-      where: { externalId: proposalData.externalId },
+      where: { id: proposalData.id },
       update: proposalData,
       create: proposalData
     })
@@ -166,17 +154,15 @@ async function main() {
   
   // Vote distributions based on the mock data
   const voteDistributions = {
-    "PROP-2025-001": { yes: 65, no: 20, abstain: 15, totalVotes: 1250 },
-    "PROP-2025-002": { yes: 78, no: 12, abstain: 10, totalVotes: 2340 },
-    "PROP-2025-003": { yes: 45, no: 35, abstain: 20, totalVotes: 890 },
-    "PROP-2025-005": { yes: 82, no: 10, abstain: 8, totalVotes: 3450 },
-    "PROP-2025-006": { yes: 35, no: 55, abstain: 10, totalVotes: 1890 }
+    "89e3a4f09122d669d6f6c82dd894e02826e8497be7eb036233bafc0ee4fc6665#0": { yes: 65, no: 20, abstain: 15, totalVotes: 1250 },
+    "e5643c33f608642e329228a968770e5b19ef5f48ff1f698712e2ce864a49e3f0#0": { yes: 78, no: 12, abstain: 10, totalVotes: 2340 },
+    "996edfe370b8e51be73541e75499a818461305e37c7fa0c1b193f2c587167cc7#0": { yes: 45, no: 35, abstain: 20, totalVotes: 890 }
   }
 
   console.log('Creating sample votes...')
 
   for (const proposal of createdProposals) {
-    const distribution = voteDistributions[proposal.externalId as keyof typeof voteDistributions]
+    const distribution = voteDistributions[proposal.id as keyof typeof voteDistributions]
     if (distribution) {
       // Calculate actual vote counts
       const yesVotes = Math.floor((distribution.yes / 100) * distribution.totalVotes)

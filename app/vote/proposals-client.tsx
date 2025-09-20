@@ -22,9 +22,7 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
 
   const filteredAndSortedProposals = useMemo(() => {
     const filtered = proposals.filter((proposal) => {
-      const matchesSearch = proposal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          proposal.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          proposal.submittedBy.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch = proposal.submittedBy.toLowerCase().includes(searchTerm.toLowerCase())
       
       const matchesCategory = selectedCategory === "All Categories" || proposal.category === selectedCategory
       const matchesStatus = selectedStatus === "All Status" || proposal.status === selectedStatus
@@ -36,15 +34,13 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime()
+          return new Date(b.votingDeadline).getTime() - new Date(a.votingDeadline).getTime()
         case "oldest":
-          return new Date(a.submissionDate).getTime() - new Date(b.submissionDate).getTime()
+          return new Date(a.votingDeadline).getTime() - new Date(b.votingDeadline).getTime()
         case "mostVotes":
           return b.currentResults.totalVotes - a.currentResults.totalVotes
         case "deadline":
           return a.daysRemaining - b.daysRemaining
-        case "amount":
-          return parseInt(b.requestedAmount.replace(/[^0-9]/g, "")) - parseInt(a.requestedAmount.replace(/[^0-9]/g, ""))
         default:
           return 0
       }
@@ -102,8 +98,8 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-semibold hover:text-blue-600 transition-colors">
-                        <Link href={`/vote/${proposal.id}`}>
-                          {proposal.title}
+                        <Link href={`/vote/${encodeURIComponent(proposal.id)}`}>
+                          Proposal {proposal.id.slice(0, 8)}...
                         </Link>
                       </h3>
                       <Badge variant="outline">{proposal.category}</Badge>
@@ -175,7 +171,7 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
                 <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {proposal.status === "active" && (
-                      <Link href={`/vote/${proposal.id}`}>
+                      <Link href={`/vote/${encodeURIComponent(proposal.id)}`}>
                         <Button size="sm">
                           Vote Now
                         </Button>

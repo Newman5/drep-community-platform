@@ -38,17 +38,10 @@ model User {
 }
 
 model Proposal {
-  id              String           @id @default(cuid())
-  externalId      String           @unique // e.g., "PROP-2025-001"
-  title           String
-  description     String
+  id              String           @unique
   category        ProposalCategory
   status          ProposalStatus
-  requestedAmount String
-  submissionDate  DateTime
   votingDeadline  DateTime
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
 
   // Relations
   submitterId String

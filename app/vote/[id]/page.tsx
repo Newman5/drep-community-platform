@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams } from "next/navigation";
 import * as z from "zod";
 import {
   Calendar,
@@ -70,6 +71,38 @@ const proposalData = {
 };
 
 export default function VotePage() {
+  const { id } = useParams();
+  const decodedId = decodeURIComponent(id as string);
+  console.log("Proposal ID from URL:", decodedId);
+
+  const [data, setData] = useState<unknown>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`/api/proposals/${id}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch proposal: ${response.statusText}`);
+        }
+        
+        const proposalData = await response.json();
+        setData(proposalData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [decodedId]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -123,6 +156,15 @@ export default function VotePage() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
+
+            {
+              loading && <div>Loading...</div>
+            }
+            {
+              error && <div>Error: {error}</div>
+            }
+
+            <pre>{JSON.stringify(data, null, 2)}</pre>
             <Badge variant="secondary" className="mb-4">
               {proposalData.category}
             </Badge>

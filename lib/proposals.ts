@@ -3,15 +3,10 @@ import { ProposalCategory } from '@prisma/client'
 
 export interface ProposalWithResults {
   id: string
-  externalId: string
-  title: string
-  description: string
   status: string
   category: string
   submittedBy: string
-  submissionDate: string
   votingDeadline: string
-  requestedAmount: string
   currentResults: {
     yes: number
     no: number
@@ -27,9 +22,6 @@ export async function getAllProposals(): Promise<ProposalWithResults[]> {
       include: {
         submitter: true,
         votes: true,
-      },
-      orderBy: {
-        submissionDate: 'desc'
       }
     })
 
@@ -52,16 +44,11 @@ export async function getAllProposals(): Promise<ProposalWithResults[]> {
       const daysRemaining = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
       return {
-        id: proposal.externalId,
-        externalId: proposal.externalId,
-        title: proposal.title,
-        description: proposal.description,
+        id: proposal.id,
         status: proposal.status.toLowerCase(),
         category: formatCategoryName(proposal.category),
         submittedBy: proposal.submitter.name || 'Anonymous',
-        submissionDate: proposal.submissionDate.toISOString().split('T')[0],
         votingDeadline: proposal.votingDeadline.toISOString().split('T')[0],
-        requestedAmount: proposal.requestedAmount,
         currentResults: {
           yes: yesPercentage,
           no: noPercentage,
@@ -77,10 +64,10 @@ export async function getAllProposals(): Promise<ProposalWithResults[]> {
   }
 }
 
-export async function getProposalById(externalId: string): Promise<ProposalWithResults | null> {
+export async function getProposalById(id: string): Promise<ProposalWithResults | null> {
   try {
     const proposal = await prisma.proposal.findUnique({
-      where: { externalId },
+      where: { id },
       include: {
         submitter: true,
         votes: {
@@ -113,16 +100,11 @@ export async function getProposalById(externalId: string): Promise<ProposalWithR
     const daysRemaining = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)))
 
     return {
-      id: proposal.externalId,
-      externalId: proposal.externalId,
-      title: proposal.title,
-      description: proposal.description,
+      id: proposal.id,
       status: proposal.status.toLowerCase(),
       category: formatCategoryName(proposal.category),
       submittedBy: proposal.submitter.name || 'Anonymous',
-      submissionDate: proposal.submissionDate.toISOString().split('T')[0],
       votingDeadline: proposal.votingDeadline.toISOString().split('T')[0],
-      requestedAmount: proposal.requestedAmount,
       currentResults: {
         yes: yesPercentage,
         no: noPercentage,
