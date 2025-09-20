@@ -103,7 +103,7 @@ export function Navigation() {
             <Link href="/login">Delegate to Us</Link>
           </Button>
           <Button asChild>
-            <Link href="/register-drep">Vote Now</Link>
+            <Link href="/vote">Vote Now</Link>
           </Button>
         </div>
 
