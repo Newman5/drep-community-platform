@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
-import { Calendar, Clock, Users, CheckCircle, XCircle, MinusCircle } from "lucide-react"
+import { Clock, CheckCircle, XCircle, MinusCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,9 +15,9 @@ interface ProposalsClientProps {
 }
 
 export default function ProposalsClient({ proposals }: ProposalsClientProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All Categories")
-  const [selectedStatus, setSelectedStatus] = useState("All Status")
+  const [searchTerm] = useState("")
+  const [selectedCategory] = useState("All Categories")
+  const [selectedStatus] = useState("All Status")
   const [sortBy] = useState("newest")
 
   const filteredAndSortedProposals = useMemo(() => {

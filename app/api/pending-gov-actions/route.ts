@@ -9,7 +9,7 @@ export async function GET() {
       { pendingProposals: pendingProposals },
       { status: 200 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { status: "error", message: "Failed to fetch pending proposals" },
       { status: 500 }
