@@ -92,16 +92,6 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
           <Card>
             <CardContent className="p-12 text-center">
               <p className="text-lg text-muted-foreground">No proposals found matching your criteria.</p>
-              <Button 
-                className="mt-4" 
-                onClick={() => {
-                  setSearchTerm("")
-                  setSelectedCategory("All Categories")
-                  setSelectedStatus("All Status")
-                }}
-              >
-                Clear Filters
-              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -116,28 +106,12 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
                           {proposal.title}
                         </Link>
                       </h3>
-                      {getStatusBadge(proposal.status)}
-                    </div>
-                    <p className="text-muted-foreground mb-3 line-clamp-2">
-                      {proposal.description}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {proposal.submissionDate}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {proposal.submittedBy}
-                      </span>
                       <Badge variant="outline">{proposal.category}</Badge>
+                      {getStatusBadge(proposal.status)}
                     </div>
                   </div>
                   
                   <div className="ml-6 text-right">
-                    <div className="text-lg font-semibold text-blue-600 mb-1">
-                      {proposal.requestedAmount}
-                    </div>
                     {proposal.status === "active" && proposal.daysRemaining > 0 && (
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
@@ -208,10 +182,7 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
                       </Link>
                     )}
                   </div>
-                  
-                  <div className="text-xs text-muted-foreground">
-                    ID: {proposal.id}
-                  </div>
+
                 </div>
               </CardContent>
             </Card>

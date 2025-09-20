@@ -1,5 +1,6 @@
 import { getAllProposals } from "@/lib/proposals"
 import ProposalsClient from "./proposals-client"
+import TestPage from "./test"
 
 export default async function ProposalsPage() {
   const mockProposals = await getAllProposals()
@@ -13,6 +14,11 @@ export default async function ProposalsPage() {
           <p className="text-lg text-muted-foreground mb-6">
             Explore and vote on proposals that shape the future of Cardano.
           </p>
+        </div>
+        <div>
+          <pre>
+            <TestPage />
+          </pre>
         </div>
         <ProposalsClient proposals={mockProposals} />
       </div>

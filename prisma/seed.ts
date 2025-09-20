@@ -96,7 +96,7 @@ async function main() {
   const proposals = [
     {
       externalId: "PROP-2025-001",
-      title: "Fund Development of DRep Tools and Education Platform",
+      title: "89e3a4f09122d669d6f6c82dd894e02826e8497be7eb036233bafc0ee4fc6665#0",
       description: "Develop comprehensive DRep tools and educational resources to help community members understand and participate in Cardano governance more effectively.",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
@@ -107,7 +107,7 @@ async function main() {
     },
     {
       externalId: "PROP-2025-002",
-      title: "Cardano Community Events Funding Program",
+      title: "e5643c33f608642e329228a968770e5b19ef5f48ff1f698712e2ce864a49e3f0#0",
       description: "Establish a recurring funding program for community-organized Cardano events, meetups, and educational workshops worldwide.",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
@@ -118,7 +118,7 @@ async function main() {
     },
     {
       externalId: "PROP-2025-003",
-      title: "Sustainability Research Initiative",
+      title: "996edfe370b8e51be73541e75499a818461305e37c7fa0c1b193f2c587167cc7#0",
       description: "Fund research into sustainable blockchain technologies and carbon-neutral solutions for the Cardano ecosystem.",
       category: ProposalCategory.info_action,
       status: ProposalStatus.ACTIVE,
@@ -126,39 +126,6 @@ async function main() {
       submitterId: greenCardanoUser.id,
       submissionDate: new Date("2025-09-05"),
       votingDeadline: new Date("2025-10-05"),
-    },
-    {
-      externalId: "PROP-2025-004",
-      title: "DeFi Education and Safety Program",
-      description: "Create educational materials and safety guidelines for DeFi participation on Cardano, including smart contract auditing resources.",
-      category: ProposalCategory.info_action,
-      status: ProposalStatus.PENDING,
-      requestedAmount: "200,000 ADA",
-      submitterId: defiSafetyUser.id,
-      submissionDate: new Date("2025-09-20"),
-      votingDeadline: new Date("2025-10-20"),
-    },
-    {
-      externalId: "PROP-2025-005",
-      title: "Native Token Standards Enhancement",
-      description: "Improve native token standards and create developer tools for better token management and metadata handling.",
-      category: ProposalCategory.info_action,
-      status: ProposalStatus.COMPLETED,
-      requestedAmount: "400,000 ADA",
-      submitterId: iohkUser.id,
-      submissionDate: new Date("2025-08-01"),
-      votingDeadline: new Date("2025-09-01"),
-    },
-    {
-      externalId: "PROP-2025-006",
-      title: "Multi-Language Documentation Project",
-      description: "Translate core Cardano documentation and governance materials into 10 major world languages to increase global accessibility.",
-      category: ProposalCategory.info_action,
-      status: ProposalStatus.REJECTED,
-      requestedAmount: "180,000 ADA",
-      submitterId: globalAllianceUser.id,
-      submissionDate: new Date("2025-08-15"),
-      votingDeadline: new Date("2025-09-15"),
     }
   ]
 

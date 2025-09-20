@@ -1,5 +1,11 @@
 import prisma from "@/lib/prisma";
 import { ProposalCategory } from "@prisma/client";
+import { BlockfrostProvider, TxParser } from "@meshsdk/core";
+import { CSLSerializer } from "@meshsdk/core-csl";
+
+const fetcher = new BlockfrostProvider(`${process.env.DMTR_BLOCKFROST_URL}`);
+const serializer = new CSLSerializer();
+const txParser = new TxParser(serializer, fetcher);
 
 export async function fetchAllProposals() {
   try {
@@ -80,7 +86,9 @@ export async function updateExpiredProposals() {
 
     for (const proposal of notExpiredProposals) {
       const response = await fetch(
-        `${process.env.BLOCKFROST_URL}/governance/proposals/${proposal.id.substring(
+        `${
+          process.env.BLOCKFROST_URL
+        }/governance/proposals/${proposal.id.substring(
           0,
           proposal.id.indexOf("#")
         )}/${proposal.id.substring(proposal.id.indexOf("#") + 1)}`,
@@ -142,7 +150,11 @@ export async function fetchDrepVotes() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data: { tx_hash: string; cert_index: number; vote: 'yes' | 'no' | 'abstain' }[] = await response.json();
+    const data: {
+      tx_hash: string;
+      cert_index: number;
+      vote: "yes" | "no" | "abstain";
+    }[] = await response.json();
     return data;
   } catch (error) {
     console.error("Fetch error:", error);
@@ -150,10 +162,10 @@ export async function fetchDrepVotes() {
   }
 }
 
-export async function fetchWhichProposalWasVotedFor() {
+export async function fetchWhichProposalWasVotedFor(txHash: string) {
   try {
     const response = await fetch(
-      `${process.env.BLOCKFROST_URL}`,    // TO-DO
+      `${process.env.BLOCKFROST_URL_DOLOS}/txs/${txHash}/cbor`,
       {
         method: "GET",
         headers: {
@@ -167,8 +179,24 @@ export async function fetchWhichProposalWasVotedFor() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data: { tx_hash: string; cert_index: number; vote: 'yes' | 'no' | 'abstain' }[] = await response.json();
-    return data;
+    const data = await response.json();
+    const txBody: {
+      votes: { vote: { govActionId: { txHash: string; txIndex: number } } }[];
+    } = await txParser.parse(data.cbor);
+
+    let govActions: { txHash: string; txIndex: number }[] = [];
+    if (txBody.votes && txBody.votes.length > 0) {
+      govActions = txBody.votes.map((vote) => {
+        return {
+          txHash: vote.vote.govActionId.txHash,
+          txIndex: vote.vote.govActionId.txIndex,
+        };
+      });
+    } else {
+      console.log("No votes found in the transaction.");
+    }
+    console.log("Governance Actions Found:", govActions);
+    return govActions;
   } catch (error) {
     console.error("Fetch error:", error);
     throw error;
@@ -177,24 +205,43 @@ export async function fetchWhichProposalWasVotedFor() {
 
 export async function getPendingProposals() {
   try {
+    await fetchAllProposals();
+    await updateExpiredProposals();
+
     const notExpiredProposals = await prisma.allProposals.findMany({
       where: { expired: false },
     });
 
-    console.log("Not Expired Proposals:", notExpiredProposals);
-
     const drepVotes = await fetchDrepVotes();
-    console.log("DRep Votes:", drepVotes);
 
-    const pendingProposals = notExpiredProposals.filter(proposal =>
-      !drepVotes.some(vote =>
-        vote.tx_hash + "#" + vote.cert_index === proposal.id
-      )
+    // Get all voted proposal IDs first
+    const votedProposalIds = new Set<string>();
+
+    for (const vote of drepVotes) {
+      try {
+        const proposalVotedFor = await fetchWhichProposalWasVotedFor(
+          vote.tx_hash
+        );
+        proposalVotedFor.forEach((govAction) => {
+          const proposalId = `${govAction.txHash}#${govAction.txIndex}`;
+          votedProposalIds.add(proposalId);
+        });
+      } catch (error) {
+        console.error(
+          `Error fetching proposal for vote ${vote.tx_hash}:`,
+          error
+        );
+      }
+    }
+
+    // Filter out proposals that have been voted on
+    const pendingProposals = notExpiredProposals.filter(
+      (proposal) => !votedProposalIds.has(proposal.id)
     );
 
-    console.log("Pending Proposals:", pendingProposals);
     return pendingProposals;
   } catch (error) {
     console.error("Error fetching pending proposals:", error);
+    throw error;
   }
 }
