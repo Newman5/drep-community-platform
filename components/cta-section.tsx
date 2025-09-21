@@ -16,7 +16,7 @@ export function CTASection() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button size="lg" asChild className="text-lg px-8 py-3">
-              <Link href="/vote">
+              <Link href="/gov-actions">
                 Vote Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

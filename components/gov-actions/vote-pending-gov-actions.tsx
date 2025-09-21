@@ -38,7 +38,7 @@ export default function VotePendingGovActionsPage({ votePendingGovActions }: Vot
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-xl font-semibold hover:text-blue-600 transition-colors">
                           <Link
-                            href={`/vote/${encodeURIComponent(govAction.id)}`}
+                            href={`/gov-actions/${encodeURIComponent(govAction.id)}`}
                           >
                             {govAction.id}
                           </Link>

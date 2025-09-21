@@ -78,7 +78,7 @@ export default function VoteForm({ govActionId, existingVote }: VoteFormProps) {
       
       if (result?.success) {
         // Redirect to success page
-        router.push('/vote?success=true');
+        router.push('/gov-actions?success=true');
       }
     } catch (error) {
       console.error('Error submitting vote:', error);
