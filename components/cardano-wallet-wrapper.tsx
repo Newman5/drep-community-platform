@@ -3,5 +3,5 @@
 import { CardanoWallet } from '@meshsdk/react';
 
 export function CardanoWalletWrapper() {
-  return <CardanoWallet />;
+  return <CardanoWallet persist={true} />;
 }
