@@ -8,7 +8,6 @@ import { Vote, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const isGovActionDetail = pathname?.startsWith('/gov-actions/') && pathname !== '/gov-actions'
 
