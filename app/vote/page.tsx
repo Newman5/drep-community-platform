@@ -1,5 +1,7 @@
+import { Suspense } from "react"
 import { getActiveGovActions } from "@/lib/gov-actions"
 import ProposalsClient from "./proposals-client"
+import SuccessNotification from "@/components/success-notification"
 
 export default async function ProposalsPage() {
   const mockProposals = await getActiveGovActions()
@@ -14,6 +16,9 @@ export default async function ProposalsPage() {
             Explore and vote on proposals that shape the future of Cardano.
           </p>
         </div>
+        <Suspense fallback={null}>
+          <SuccessNotification />
+        </Suspense>
         <ProposalsClient proposals={mockProposals} />
       </div>
     </div>

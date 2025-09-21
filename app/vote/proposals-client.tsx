@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Clock, CheckCircle, XCircle, MinusCircle } from "lucide-react";
 
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { GovActionWithResults } from "@/lib/gov-actions";
 
 interface ProposalsClientProps {
@@ -19,36 +18,6 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
   const [searchTerm] = useState("");
   const [selectedCategory] = useState("All Categories");
   const [sortBy] = useState("newest");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Construct the full URL for client-side fetch
-        const baseUrl =
-          process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
-        const pendingProposalsResponse = await fetch(
-          `${baseUrl}/api/pending-gov-actions`,
-          {
-            cache: "no-store", // Ensure fresh data
-          }
-        );
-
-        if (!pendingProposalsResponse.ok) {
-          throw new Error(
-            `Failed to fetch: ${pendingProposalsResponse.status}`
-          );
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const filteredAndSortedProposals = useMemo(() => {
     const filtered = proposals.filter((proposal) => {
@@ -87,20 +56,12 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
     });
 
     return filtered;
-  }, [proposals, searchTerm, selectedCategory, sortBy, loading]);
+  }, [proposals, searchTerm, selectedCategory, sortBy]);
 
   return (
     <>
       {/* Proposals List */}
       <div className="space-y-6">
-        {error && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <p className="text-lg text-muted-foreground">{error}</p>
-            </CardContent>
-          </Card>
-        )}
-
         {filteredAndSortedProposals.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
@@ -111,16 +72,6 @@ export default function ProposalsClient({ proposals }: ProposalsClientProps) {
           </Card>
         ) : (
           <>
-            {loading && (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <div className="space-y-4">
-                    <Skeleton className="h-4 w-3/4 mx-auto" />
-                    <Skeleton className="h-4 w-1/2 mx-auto" />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
             {filteredAndSortedProposals.map((proposal) => (
               <Card
                 key={proposal.id}
