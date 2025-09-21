@@ -7,48 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AllProposals {
-  id       String           @unique
-  category ProposalCategory
+model GovAction {
+  id       String        @unique
+  category GovActionType
   expired  Boolean
-}
 
-model User {
-  id        String   @id @default(cuid())
-  walletId  String   @unique
-  email     String?  @unique
-  name      String?
-  avatar    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  votingDeadline DateTime
 
-  // DRep related fields
-  isDRep      Boolean @default(false)
-  drepTitle   String?
-  drepBio     String?
-  drepWebsite String?
-
-  // Relations
-  proposalsSubmitted Proposal[]       @relation("ProposalSubmitter")
-  votes              Vote[]
-  drepDelegations    DRepDelegation[] @relation("DRepDelegate")
-  userDelegations    DRepDelegation[] @relation("DelegatingUser")
-
-  @@map("users")
-}
-
-model Proposal {
-  id              String           @unique
-  category        ProposalCategory
-  status          ProposalStatus
-  votingDeadline  DateTime
-
-  // Relations
-  submitterId String
-  submitter   User   @relation("ProposalSubmitter", fields: [submitterId], references: [id])
-  votes       Vote[]
-
-  @@map("proposals")
+  votes Vote[]
 }
 
 model Vote {
@@ -58,47 +24,16 @@ model Vote {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  // Relations
-  userId     String
-  proposalId String
-  user       User     @relation(fields: [userId], references: [id])
-  proposal   Proposal @relation(fields: [proposalId], references: [id])
+  voter String
 
-  // Ensure one vote per user per proposal
-  @@unique([userId, proposalId])
+  govActionId String
+  govAction   GovAction @relation(fields: [govActionId], references: [id])
+
+  @@unique([voter, govActionId])
   @@map("votes")
 }
 
-model DRepDelegation {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isActive  Boolean  @default(true)
-
-  // Relations
-  userId String
-  drepId String
-  user   User   @relation("DelegatingUser", fields: [userId], references: [id])
-  drep   User   @relation("DRepDelegate", fields: [drepId], references: [id])
-
-  // Ensure one active delegation per user
-  @@unique([userId, isActive])
-  @@map("drep_delegations")
-}
-
-model GovernanceEvent {
-  id          String              @id @default(cuid())
-  type        GovernanceEventType
-  title       String
-  description String?
-  eventDate   DateTime
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-
-  @@map("governance_events")
-}
-
-enum ProposalCategory {
+enum GovActionType {
   info_action
   parameter_change
   treasury_withdrawals
@@ -107,17 +42,7 @@ enum ProposalCategory {
   new_constitution
   no_confidence
 
-  @@map("proposal_category")
-}
-
-enum ProposalStatus {
-  PENDING
-  ACTIVE
-  COMPLETED
-  REJECTED
-  EXPIRED
-
-  @@map("proposal_status")
+  @@map("gov_action_type")
 }
 
 enum VoteChoice {
@@ -126,16 +51,4 @@ enum VoteChoice {
   ABSTAIN
 
   @@map("vote_choice")
-}
-
-enum GovernanceEventType {
-  PROPOSAL_SUBMITTED
-  VOTING_STARTED
-  VOTING_ENDED
-  PROPOSAL_RATIFIED
-  PROPOSAL_REJECTED
-  DREP_REGISTERED
-  DELEGATION_CHANGED
-
-  @@map("governance_event_type")
 }

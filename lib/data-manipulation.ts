@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { ProposalCategory } from "@prisma/client";
+import { GovActionType } from "@prisma/client";
 import { BlockfrostProvider, TxParser } from "@meshsdk/core";
 import { CSLSerializer } from "@meshsdk/core-csl";
 
@@ -27,7 +27,7 @@ export async function fetchAllProposals() {
     const data: {
       tx_hash: string;
       cert_index: number;
-      governance_type: ProposalCategory;
+      governance_type: GovActionType;
     }[] = await response.json();
 
     try {
@@ -36,17 +36,18 @@ export async function fetchAllProposals() {
         const proposalId = proposal.tx_hash + "#" + proposal.cert_index;
 
         // Check if proposal already exists
-        const existingProposal = await prisma.allProposals.findUnique({
+        const existingProposal = await prisma.govAction.findUnique({
           where: { id: proposalId },
         });
 
         // Only create if it doesn't exist
         if (!existingProposal) {
-          await prisma.allProposals.create({
+          await prisma.govAction.create({
             data: {
               id: proposalId,
               category: proposal.governance_type,
               expired: false,
+              votingDeadline: new Date(), // Add required votingDeadline field
             },
           });
         }
@@ -80,7 +81,7 @@ export async function updateExpiredProposals() {
       await currentEpochResponse.json();
     const currentEpoch = currentEpochData.epoch;
 
-    const notExpiredProposals = await prisma.allProposals.findMany({
+    const notExpiredProposals = await prisma.govAction.findMany({
       where: { expired: false },
     });
 
@@ -121,7 +122,7 @@ export async function updateExpiredProposals() {
 
       // If the current epoch is greater than or equal to the expiration epoch, mark as expired
       if (currentEpoch >= data.expiration) {
-        await prisma.allProposals.update({
+        await prisma.govAction.update({
           where: { id: proposal.id },
           data: { expired: true },
         });
@@ -208,7 +209,7 @@ export async function getPendingProposals() {
     await fetchAllProposals();
     await updateExpiredProposals();
 
-    const notExpiredProposals = await prisma.allProposals.findMany({
+    const notExpiredProposals = await prisma.govAction.findMany({
       where: { expired: false },
     });
 

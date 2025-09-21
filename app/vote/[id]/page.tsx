@@ -101,7 +101,7 @@ export default function VotePage() {
     };
 
     fetchData();
-  }, [decodedId]);
+  }, [id]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);

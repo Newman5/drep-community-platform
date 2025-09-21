@@ -1,9 +1,9 @@
-import { getAllProposals } from "@/lib/proposals"
+import { getAllGovActions } from "@/lib/gov-actions"
 import ProposalsClient from "./proposals-client"
 import TestPage from "./test"
 
 export default async function ProposalsPage() {
-  const mockProposals = await getAllProposals()
+  const mockProposals = await getAllGovActions()
 
   return (
   <div className="min-h-screen bg-background">

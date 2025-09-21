@@ -9,21 +9,21 @@ export async function GET(
     const { id } = await params;
     const decodedId = decodeURIComponent(id);
     
-    console.log("Fetching proposal with ID:", decodedId);
-    const proposal = await prisma.proposal.findUnique({
+    console.log("Fetching gov action with ID:", decodedId);
+    const govAction = await prisma.govAction.findUnique({
       where: { id: decodedId },
     });
 
-    if (!proposal) {
+    if (!govAction) {
       return NextResponse.json(
-        { error: 'Proposal not found' },
+        { error: 'Gov action not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(proposal);
+    return NextResponse.json(govAction);
   } catch (error) {
-    console.error('Error fetching proposal:', error);
+    console.error('Error fetching gov action:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
