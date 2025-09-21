@@ -11,6 +11,7 @@ model GovAction {
   id       String        @unique
   category GovActionType
   expired  Boolean
+  voted    Boolean
 
   votingDeadline DateTime
 

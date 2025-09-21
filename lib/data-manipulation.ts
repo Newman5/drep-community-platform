@@ -47,7 +47,8 @@ export async function fetchAllProposals() {
               id: proposalId,
               category: proposal.governance_type,
               expired: false,
-              votingDeadline: new Date(), // Add required votingDeadline field
+              votingDeadline: new Date(),
+              voted: false,
             },
           });
         }
@@ -193,10 +194,7 @@ export async function fetchWhichProposalWasVotedFor(txHash: string) {
           txIndex: vote.vote.govActionId.txIndex,
         };
       });
-    } else {
-      console.log("No votes found in the transaction.");
     }
-    console.log("Governance Actions Found:", govActions);
     return govActions;
   } catch (error) {
     console.error("Fetch error:", error);
@@ -209,24 +207,30 @@ export async function getPendingProposals() {
     await fetchAllProposals();
     await updateExpiredProposals();
 
-    const notExpiredProposals = await prisma.govAction.findMany({
-      where: { expired: false },
-    });
-
     const drepVotes = await fetchDrepVotes();
-
-    // Get all voted proposal IDs first
-    const votedProposalIds = new Set<string>();
 
     for (const vote of drepVotes) {
       try {
-        const proposalVotedFor = await fetchWhichProposalWasVotedFor(
+        const govActionsVotedFor = await fetchWhichProposalWasVotedFor(
           vote.tx_hash
         );
-        proposalVotedFor.forEach((govAction) => {
-          const proposalId = `${govAction.txHash}#${govAction.txIndex}`;
-          votedProposalIds.add(proposalId);
+
+        const pendingVotes = await prisma.govAction.findMany({
+          where: { voted: false },
         });
+
+        for (const action of govActionsVotedFor) {
+          const proposalId = action.txHash + "#" + action.txIndex;
+          const matchedProposal = pendingVotes.find(
+            (proposal) => proposal.id === proposalId
+          );
+          if (matchedProposal) {
+            await prisma.govAction.update({
+              where: { id: proposalId },
+              data: { voted: true },
+            });
+          }
+        }
       } catch (error) {
         console.error(
           `Error fetching proposal for vote ${vote.tx_hash}:`,
@@ -235,12 +239,13 @@ export async function getPendingProposals() {
       }
     }
 
-    // Filter out proposals that have been voted on
-    const pendingProposals = notExpiredProposals.filter(
-      (proposal) => !votedProposalIds.has(proposal.id)
-    );
+    const pendingVotes = await prisma.govAction.findMany({
+      where: { expired: false, voted: false },
+    });
 
-    return pendingProposals;
+    console.log("Pending Votes:", pendingVotes);
+
+    return pendingVotes;
   } catch (error) {
     console.error("Error fetching pending proposals:", error);
     throw error;

@@ -1,9 +1,8 @@
-import { getAllGovActions } from "@/lib/gov-actions"
+import { getActiveGovActions } from "@/lib/gov-actions"
 import ProposalsClient from "./proposals-client"
-import TestPage from "./test"
 
 export default async function ProposalsPage() {
-  const mockProposals = await getAllGovActions()
+  const mockProposals = await getActiveGovActions()
 
   return (
   <div className="min-h-screen bg-background">
@@ -14,11 +13,6 @@ export default async function ProposalsPage() {
           <p className="text-lg text-muted-foreground mb-6">
             Explore and vote on proposals that shape the future of Cardano.
           </p>
-        </div>
-        <div>
-          <pre>
-            <TestPage />
-          </pre>
         </div>
         <ProposalsClient proposals={mockProposals} />
       </div>
