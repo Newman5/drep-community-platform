@@ -4,6 +4,9 @@ import { Clock, LinkIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import VoteForm from "@/components/vote-form";
 import prisma from '@/lib/prisma';
+import { ClientMeshProvider } from '@/components/mesh-provider';
+import { CardanoWalletWrapper } from '@/components/cardano-wallet-wrapper';
+import TokenGating from '@/components/token-gating';
 
 interface VotePageProps {
   params: Promise<{ id: string }>;
@@ -59,7 +62,10 @@ export default async function VotePage({ params }: VotePageProps) {
   const existingVote = await getUserVote(govAction.id, 'test-user');
 
   return (
+    <ClientMeshProvider>
     <div className="min-h-screen bg-background">
+      <CardanoWalletWrapper />
+      <TokenGating />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
@@ -90,5 +96,6 @@ export default async function VotePage({ params }: VotePageProps) {
         </div>
       </div>
     </div>
+    </ClientMeshProvider>
   );
 }
