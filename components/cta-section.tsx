@@ -14,7 +14,7 @@ export function CTASection() {
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             Join hundreds of Cardano community members who are actively shaping the future of the ecosystem through democratic governance.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
+          <div className="my-10 flex items-center justify-center gap-x-6">
             <Button size="lg" asChild className="text-lg px-8 py-3">
               <Link href="/gov-actions">
                 Vote Now
@@ -22,7 +22,7 @@ export function CTASection() {
               </Link>
             </Button>
             <Button variant="outline" size="lg" asChild className="text-lg px-8 py-3">
-              <Link href="/community">
+              <Link href="https://discord.gg/YkWgGR3C">
                 <Users className="mr-2 h-5 w-5" />
                 Join Community
               </Link>

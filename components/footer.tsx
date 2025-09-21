@@ -31,17 +31,17 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Governance</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/proposals" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/gov-actions" className="text-muted-foreground hover:text-foreground transition-colors">
                   Active Proposals
                 </Link>
               </li>
               <li>
-                <Link href="/delegate" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Delegate To Gimbalabs DRep
                 </Link>
               </li>
               <li>
-                <Link href="/voting-history" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Voting History
                 </Link>
               </li>
@@ -53,22 +53,22 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Community</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="https://gimbalabs.com" className="text-muted-foreground hover:text-foreground transition-colors">
                   About Gimbalabs
                 </Link>
               </li>
               <li>
-                <Link href="/events" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Events
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/discord" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="https://discord.gg/YkWgGR3C" className="text-muted-foreground hover:text-foreground transition-colors">
                   Discord
                 </Link>
               </li>
@@ -80,7 +80,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/learn" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Delegate to GMBL stakepool
                 </Link>
               </li>
@@ -93,10 +93,10 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="flex space-x-6 text-sm text-muted-foreground">
-            <Link href="/privacy" className="hover:text-foreground transition-colors">
+            <Link href="#" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">
+            <Link href="#" className="hover:text-foreground transition-colors">
               Terms of Service
             </Link>
           </div>
@@ -120,7 +120,7 @@ export function Footer() {
                 </Link>
               </Button>
               <Button variant="ghost" size="icon" asChild>
-                <Link href="mailto:hello@gimbalabs.com">
+                <Link href="#">
                   <Mail className="h-4 w-4" />
                 </Link>
               </Button>

@@ -37,7 +37,7 @@ export function Navigation() {
             </Button>
           ) : (
             <Button variant="ghost" asChild>
-              <Link href="/login">Delegate to Us</Link>
+              <Link href="#">Delegate to Us</Link>
             </Button>
           )}
           {pathname !== '/gov-actions' && !isGovActionDetail && (
