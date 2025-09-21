@@ -10,22 +10,18 @@ import { Clock, LinkIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import VoteForm from "@/components/vote-form";
 import { CardanoWalletWrapper } from "./cardano-wallet-wrapper";
+import type { GovAction, Vote } from "@prisma/client";
 
 export default function TokenGating({
   govAction,
   existingVote,
 }: {
-  govAction: any;
-  existingVote: any;
+  govAction: GovAction;
+  existingVote: Vote | null;
 }) {
   const [alias, setAlias] = useState<string | null>(null);
   const [isContributor, setIsContributor] = useState<boolean>(false);
   const { connected, wallet } = useWallet();
-
-  const andamio = new AndamioSDK(
-    "https://utxorpc.dolos.andamio.space:443",
-    "Mainnet"
-  );
 
   const accessTokenPolicy =
     "e760308d0c14096ff479ec5f2495455505feb790503903fe976c4fd2";
@@ -34,6 +30,11 @@ export default function TokenGating({
   useEffect(() => {
     if (connected && wallet) {
       const checkAssets = async () => {
+        const andamio = new AndamioSDK(
+          "https://utxorpc.dolos.andamio.space:443",
+          "Mainnet"
+        );
+        
         const assets = await wallet.getAssets();
         const accessToken = assets.find(
           (asset) => asset.policyId === accessTokenPolicy
@@ -49,7 +50,7 @@ export default function TokenGating({
           const datum = parseDatumCbor(blockfrostUtxo.inline_datum as string);
           const credentials = datum.fields[2].list;
           const projectCredential = credentials.find(
-            (cred: any) => cred.fields[0].bytes === projectId
+            (cred: { fields: { bytes: string }[] }) => cred.fields[0].bytes === projectId
           );
           if (!projectCredential) {
             alert("You do not hold the required project credential.");
@@ -60,7 +61,7 @@ export default function TokenGating({
       };
       checkAssets();
     }
-  }, [connected, wallet]);
+  }, [connected, wallet, accessTokenPolicy, projectId]);
 
   return (
     <div className="container mx-auto px-4 py-4">
