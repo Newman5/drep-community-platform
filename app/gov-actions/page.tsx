@@ -1,10 +1,11 @@
 import { Suspense } from "react"
-import { getActiveGovActions } from "@/lib/gov-actions"
-import ProposalsClient from "./proposals-client"
+import { getVotePendingGovActions } from "@/lib/gov-actions"
+import VotePendingGovActionsPage from "../../components/gov-actions/vote-pending-gov-actions"
 import SuccessNotification from "@/components/success-notification"
+import { UpdateGovActions } from "./sync-gov-actions"
 
-export default async function ProposalsPage() {
-  const mockProposals = await getActiveGovActions()
+export default async function GovActionsPage() {
+  const votePendingGovActions = await getVotePendingGovActions()
 
   return (
   <div className="min-h-screen bg-background">
@@ -19,7 +20,8 @@ export default async function ProposalsPage() {
         <Suspense fallback={null}>
           <SuccessNotification />
         </Suspense>
-        <ProposalsClient proposals={mockProposals} />
+        <UpdateGovActions />
+        <VotePendingGovActionsPage votePendingGovActions={votePendingGovActions} />
       </div>
     </div>
   )

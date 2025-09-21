@@ -7,7 +7,7 @@ const fetcher = new BlockfrostProvider(`${process.env.DMTR_BLOCKFROST_URL}`);
 const serializer = new CSLSerializer();
 const txParser = new TxParser(serializer, fetcher);
 
-export async function fetchAllProposals() {
+export async function updateAllProposals() {
   try {
     const response = await fetch(
       `${process.env.BLOCKFROST_URL}/governance/proposals`,
@@ -202,11 +202,8 @@ export async function fetchWhichProposalWasVotedFor(txHash: string) {
   }
 }
 
-export async function getPendingProposals() {
+export async function updateProposalAsVoted() {
   try {
-    await fetchAllProposals();
-    await updateExpiredProposals();
-
     const drepVotes = await fetchDrepVotes();
 
     for (const vote of drepVotes) {
@@ -218,7 +215,6 @@ export async function getPendingProposals() {
         const pendingVotes = await prisma.govAction.findMany({
           where: { voted: false },
         });
-
         for (const action of govActionsVotedFor) {
           const proposalId = action.txHash + "#" + action.txIndex;
           const matchedProposal = pendingVotes.find(
@@ -238,16 +234,8 @@ export async function getPendingProposals() {
         );
       }
     }
-
-    const pendingVotes = await prisma.govAction.findMany({
-      where: { expired: false, voted: false },
-    });
-
-    console.log("Pending Votes:", pendingVotes);
-
-    return pendingVotes;
   } catch (error) {
-    console.error("Error fetching pending proposals:", error);
+    console.error("Error updating proposals as voted:", error);
     throw error;
   }
 }
