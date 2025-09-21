@@ -1,11 +1,6 @@
 import { notFound } from 'next/navigation';
-import Link from "next/link";
-import { Clock, LinkIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import VoteForm from "@/components/vote-form";
 import prisma from '@/lib/prisma';
 import { ClientMeshProvider } from '@/components/mesh-provider';
-import { CardanoWalletWrapper } from '@/components/cardano-wallet-wrapper';
 import TokenGating from '@/components/token-gating';
 
 interface VotePageProps {
@@ -64,37 +59,7 @@ export default async function VotePage({ params }: VotePageProps) {
   return (
     <ClientMeshProvider>
     <div className="min-h-screen bg-background">
-      <CardanoWalletWrapper />
-      <TokenGating />
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <Badge variant="secondary" className="mb-4">
-              {govAction.category}
-            </Badge>
-            <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link
-                href={`/proposals/${govAction.id}`}
-                className="flex items-center gap-2"
-              >
-                <LinkIcon className="h-4 w-4" /> GovTool
-              </Link>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" /> days remaining
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Voting Form */}
-              <VoteForm govActionId={govAction.id} existingVote={existingVote} />
-            </div>
-          </div>
-        </div>
-      </div>
+      <TokenGating govAction={govAction} existingVote={existingVote} />
     </div>
     </ClientMeshProvider>
   );

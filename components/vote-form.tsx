@@ -48,9 +48,10 @@ type VoteFormData = z.infer<typeof voteFormSchema>;
 interface VoteFormProps {
   govActionId: string;
   existingVote?: Vote | null;
+  alias: string;
 }
 
-export default function VoteForm({ govActionId, existingVote }: VoteFormProps) {
+export default function VoteForm({ govActionId, existingVote, alias }: VoteFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function VoteForm({ govActionId, existingVote }: VoteFormProps) {
       formData.append('govActionId', govActionId);
       formData.append('vote', data.vote);
       formData.append('rationale', data.rationale || '');
-      formData.append('voter', 'test-user'); // In a real app, this would come from authentication
+      formData.append('voter', alias);
 
       const result = await submitVote(formData);
       
