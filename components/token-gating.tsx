@@ -83,7 +83,7 @@ export default function TokenGating({
                   <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
                   <div className="flex items-center gap-6 text-sm text-muted-foreground">
                     <Link
-                      href={`/proposals/${govAction.id}`}
+                      href={`https://gov.tools/governance_actions/${govAction.id}`}
                       className="flex items-center gap-2"
                     >
                       <LinkIcon className="h-4 w-4" /> GovTool

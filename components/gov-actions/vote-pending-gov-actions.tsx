@@ -56,7 +56,7 @@ export default function VotePendingGovActionsPage({
                         <Badge variant="outline">{govAction.category}</Badge>
                         <Badge>
                           <Link
-                            href={`/proposals/${govAction.id}`}
+                            href={`https://gov.tools/governance_actions/${govAction.id}`}
                             className="flex items-center gap-2"
                           >
                             <LinkIcon className="h-4 w-4" /> GovTool
