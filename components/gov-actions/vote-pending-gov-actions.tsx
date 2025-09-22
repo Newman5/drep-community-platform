@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, CheckCircle, XCircle, MinusCircle } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
+  MinusCircle,
+  LinkIcon,
+} from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +18,9 @@ interface VotePendingGovActionsPageProps {
   votePendingGovActions: GovActionWithResults[];
 }
 
-export default function VotePendingGovActionsPage({ votePendingGovActions }: VotePendingGovActionsPageProps) {
+export default function VotePendingGovActionsPage({
+  votePendingGovActions,
+}: VotePendingGovActionsPageProps) {
   return (
     <>
       {/* Proposals List */}
@@ -38,12 +46,22 @@ export default function VotePendingGovActionsPage({ votePendingGovActions }: Vot
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-xl font-semibold hover:text-blue-600 transition-colors">
                           <Link
-                            href={`/gov-actions/${encodeURIComponent(govAction.id)}`}
+                            href={`/gov-actions/${encodeURIComponent(
+                              govAction.id
+                            )}`}
                           >
                             {govAction.id}
                           </Link>
                         </h3>
                         <Badge variant="outline">{govAction.category}</Badge>
+                        <Badge>
+                          <Link
+                            href={`/proposals/${govAction.id}`}
+                            className="flex items-center gap-2"
+                          >
+                            <LinkIcon className="h-4 w-4" /> GovTool
+                          </Link>
+                        </Badge>
                       </div>
                     </div>
 
@@ -132,8 +150,8 @@ export default function VotePendingGovActionsPage({ votePendingGovActions }: Vot
       {votePendingGovActions.length > 0 && (
         <div className="mt-8 text-center">
           <p className="text-muted-foreground">
-            Showing {votePendingGovActions.length} of {votePendingGovActions.length}{" "}
-            proposals
+            Showing {votePendingGovActions.length} of{" "}
+            {votePendingGovActions.length} proposals
           </p>
         </div>
       )}
