@@ -63,61 +63,66 @@ export default function TokenGating({
     }
   }, [connected, wallet, accessTokenPolicy, projectId]);
 
+  const isEnabled = isContributor && alias;
+
   return (
     <div className="container mx-auto px-4 py-4">
       <div className="max-w-4xl mx-auto">
         <CardanoWalletWrapper />
-        {isContributor && alias ? (
-          <>
-            <div className="flex justify-center ">
-              <h1 className="text-3xl font-bold mb-4">
-                Welcome <i>{alias}</i>, Cast your vote!
-              </h1>
-            </div>
-            <div className="container mx-auto px-4 py-12">
-              <div className="max-w-4xl mx-auto">
-                <div className="mb-8">
-                  <Badge variant="secondary" className="mb-4">
-                    {govAction.category}
-                  </Badge>
-                  <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <Link
-                      href={`https://gov.tools/governance_actions/${govAction.id}`}
-                      className="flex items-center gap-2"
-                    >
-                      <LinkIcon className="h-4 w-4" /> GovTool
-                    </Link>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" /> days remaining
-                    </div>
-                  </div>
-                </div>
+        
+        <div className="flex justify-center">
+          <h1 className="text-3xl font-bold mb-4">
+            {isEnabled ? (
+              <>Welcome <i>{alias}</i>, Cast your vote!</>
+            ) : (
+              "Cast your vote!"
+            )}
+          </h1>
+        </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Main Content */}
-                  <div className="lg:col-span-2 space-y-6">
-                    {/* Voting Form */}
-                    <VoteForm
-                      govActionId={govAction.id}
-                      existingVote={existingVote}
-                      alias={alias}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="text-center p-6 bg-red-100 rounded-lg my-10">
-            <h2 className="text-2xl font-semibold mb-2">Join us</h2>
-
-            <p className="text-lg">
-              Contributors to <Link href="https://app.andamio.io/project/e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2" className="text-blue-500"><i>Sustain and Maintain Gimbalabs</i></Link> can only
-              participate for now.
+        {!isEnabled && (
+          <div className="text-center p-4 bg-amber-100 rounded-lg mb-6">
+            <h2 className="text-xl font-semibold mb-2">Join us to participate</h2>
+            <p className="text-sm">
+              Contributors to <Link href="https://app.andamio.io/project/e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2" className="text-blue-500"><i>Sustain and Maintain Gimbalabs</i></Link> can 
+              participate in voting.
             </p>
           </div>
         )}
+
+        <div className={`container mx-auto px-4 py-12 ${!isEnabled ? 'opacity-50 pointer-events-none' : ''}`}>
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <Badge variant="secondary" className="mb-4">
+                {govAction.category}
+              </Badge>
+              <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                <Link
+                  href={`https://gov.tools/governance_actions/${govAction.id}`}
+                  className="flex items-center gap-2"
+                >
+                  <LinkIcon className="h-4 w-4" /> GovTool
+                </Link>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" /> days remaining
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Main Content */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Voting Form */}
+                <VoteForm
+                  govActionId={govAction.id}
+                  existingVote={existingVote}
+                  alias={alias || ""}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
