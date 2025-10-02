@@ -3,7 +3,7 @@ import { GovActionType } from "@prisma/client";
 import { BlockfrostProvider, TxParser } from "@meshsdk/core";
 import { CSLSerializer } from "@meshsdk/core-csl";
 
-const fetcher = new BlockfrostProvider(`${process.env.DMTR_BLOCKFROST_URL}`);
+const fetcher = new BlockfrostProvider(`${process.env.BLOCKFROST_API_KEY}`);
 const serializer = new CSLSerializer();
 const txParser = new TxParser(serializer, fetcher);
 
@@ -15,7 +15,7 @@ export async function updateAllProposals() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "dmtr-api-key": `${process.env.DMTR_API_KEY}`,
+          "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
         },
       }
     );
@@ -69,7 +69,7 @@ export async function updateExpiredProposals() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "dmtr-api-key": `${process.env.DMTR_API_KEY}`,
+          "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
         },
       }
     );
@@ -98,7 +98,7 @@ export async function updateExpiredProposals() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "dmtr-api-key": `${process.env.DMTR_API_KEY}`,
+            "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
           },
         }
       );
@@ -143,7 +143,7 @@ export async function fetchDrepVotes() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "dmtr-api-key": `${process.env.DMTR_API_KEY}`,
+          "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
         },
       }
     );
@@ -167,12 +167,12 @@ export async function fetchDrepVotes() {
 export async function fetchWhichProposalWasVotedFor(txHash: string) {
   try {
     const response = await fetch(
-      `${process.env.BLOCKFROST_URL_DOLOS}/txs/${txHash}/cbor`,
+      `${process.env.BLOCKFROST_URL}/txs/${txHash}/cbor`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "dmtr-api-key": `${process.env.DMTR_API_KEY}`,
+          "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
         },
       }
     );
