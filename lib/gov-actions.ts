@@ -14,6 +14,7 @@ export interface GovActionWithResults {
   daysRemaining: number;
 }
 
+// extends the interface
 type GovActionWithVotes = GovAction & {
   votes: Vote[];
 };
