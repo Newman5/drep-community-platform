@@ -125,7 +125,9 @@ export default function TokenGating({
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    href={`/gov-actions/${govAction.id}/rationales-page`}
+                    href={`/gov-actions/${encodeURIComponent(
+                      govAction.id
+                    )}/rationales-page`}
                     className="flex items-center gap-2"
                   >
                     <Scale className="h-4 w-4" /> Public Rationales
