@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Vote } from "lucide-react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
@@ -104,10 +105,11 @@ export default function PublicRationales() {
         >
           <CardHeader className="bg-muted/60 border-b px-6 py-2 items-center [.border-b]:pb-1">
             <CardTitle
-              className={`text-sm font-semibold leading-tight ${
+              className={`flex items-center gap-2 text-sm font-semibold leading-tight ${
                 choiceColor[item.choice]
               }`}
             >
+              <Vote className="h-4 w-4 text-black" />
               {label(item.choice)} {/* Yes / No / Abstain with color */}
             </CardTitle>
           </CardHeader>
