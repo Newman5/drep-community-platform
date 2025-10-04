@@ -1,6 +1,6 @@
 "use client";
-import PublicRationales from "@/components/public-rationales";
+import CommunityRationales from "@/components/community-rationales";
 
 export default function RationalePage() {
-  return <PublicRationales />;
+  return <CommunityRationales />;
 }

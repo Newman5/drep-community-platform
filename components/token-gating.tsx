@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import VoteForm from "@/components/vote-form";
 import { CardanoWalletWrapper } from "./cardano-wallet-wrapper";
 import type { GovAction, Vote } from "@prisma/client";
-// import PublicRationales from "./public-rationales";
 
 export default function TokenGating({
   govAction,
@@ -130,7 +129,7 @@ export default function TokenGating({
                     )}/rationales-page`}
                     className="flex items-center gap-2"
                   >
-                    <Scale className="h-4 w-4" /> Public Rationales
+                    <Scale className="h-4 w-4" /> Community Rationales
                   </Link>
                 </div>
               </div>
