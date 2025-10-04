@@ -39,7 +39,7 @@ const voteFormSchema = z.object({
   }),
   rationale: z
     .string()
-    .min(300, "Rationale must be at least 300 characters long"),
+    .min(120, "Rationale must be at least 120 characters long"),
 });
 
 type VoteFormData = z.infer<typeof voteFormSchema>;
