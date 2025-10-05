@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import AndamioSDK from "@andamiojs/sdk";
 import { parseDatumCbor } from "@meshsdk/core-csl";
 import Link from "next/link";
-import { Clock, LinkIcon } from "lucide-react";
+import { Clock, LinkIcon, Scale } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import VoteForm from "@/components/vote-form";
 import { CardanoWalletWrapper } from "./cardano-wallet-wrapper";
@@ -34,7 +34,7 @@ export default function TokenGating({
           "https://utxorpc.dolos.andamio.space:443",
           "Mainnet"
         );
-        
+
         const assets = await wallet.getAssets();
         const accessToken = assets.find(
           (asset) => asset.policyId === accessTokenPolicy
@@ -50,7 +50,8 @@ export default function TokenGating({
           const datum = parseDatumCbor(blockfrostUtxo.inline_datum as string);
           const credentials = datum.fields[2].list;
           const projectCredential = credentials.find(
-            (cred: { fields: { bytes: string }[] }) => cred.fields[0].bytes === projectId
+            (cred: { fields: { bytes: string }[] }) =>
+              cred.fields[0].bytes === projectId
           );
           if (!projectCredential) {
             alert("You do not hold the required project credential.");
@@ -69,11 +70,13 @@ export default function TokenGating({
     <div className="container mx-auto px-4 py-4">
       <div className="max-w-4xl mx-auto">
         <CardanoWalletWrapper />
-        
+
         <div className="flex justify-center">
           <h1 className="text-3xl font-bold mb-4">
             {isEnabled ? (
-              <>Welcome <i>{alias}</i>, Cast your vote!</>
+              <>
+                Welcome <i>{alias}</i>, Cast your vote!
+              </>
             ) : (
               "Cast your vote!"
             )}
@@ -82,15 +85,27 @@ export default function TokenGating({
 
         {!isEnabled && (
           <div className="text-center p-4 bg-amber-100 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2">Join us to participate</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              Join us to participate
+            </h2>
             <p className="text-sm">
-              Contributors to <Link href="https://app.andamio.io/project/e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2" className="text-blue-500"><i>Sustain and Maintain Gimbalabs</i></Link> can 
-              participate in voting.
+              Contributors to{" "}
+              <Link
+                href="https://app.andamio.io/project/e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2"
+                className="text-blue-500"
+              >
+                <i>Sustain and Maintain Gimbalabs</i>
+              </Link>{" "}
+              can participate in voting.
             </p>
           </div>
         )}
 
-        <div className={`container mx-auto px-4 py-12 ${!isEnabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div
+          className={`container mx-auto px-4 py-12 ${
+            !isEnabled ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
               <Badge variant="secondary" className="mb-4">
@@ -106,6 +121,16 @@ export default function TokenGating({
                 </Link>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" /> days remaining
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/gov-actions/${encodeURIComponent(
+                      govAction.id
+                    )}/rationales-page`}
+                    className="flex items-center gap-2"
+                  >
+                    <Scale className="h-4 w-4" /> Community Rationales
+                  </Link>
                 </div>
               </div>
             </div>

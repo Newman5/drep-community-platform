@@ -43,7 +43,7 @@ export async function submitVote(formData: FormData) {
         },
         data: {
           choice: normalizedVote as "YES" | "NO" | "ABSTAIN",
-          rationale: rationale || null,
+          rationale: rationale,
           updatedAt: new Date()
         }
       });
