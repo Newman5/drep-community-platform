@@ -9,6 +9,7 @@ datasource db {
 
 model GovAction {
   id       String        @unique
+  title    String?
   category GovActionType
   expired  Boolean
   voted    Boolean

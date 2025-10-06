@@ -72,6 +72,7 @@ const getOptimizedPageData = cache(async (id: string): Promise<OptimizedVotePage
     return {
       govAction: {
         id: govAction.id,
+        title: govAction.title || '',
         category: govAction.category,
         expired: govAction.expired,
         voted: govAction.voted,

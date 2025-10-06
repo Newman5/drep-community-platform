@@ -169,27 +169,6 @@ export default function TokenGating({
           </h1>
         </div>
 
-        {/* Error Alert - Only show if we've completed verification */}
-        {showVerificationError && (
-          <div className="text-center p-4 bg-red-100 border border-red-200 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold text-red-800 mb-2">
-              Access Verification Failed
-            </h2>
-            <p className="text-sm text-red-700 mb-3">{error}</p>
-            <button
-              onClick={() => {
-                setError(null);
-                setAlias(null);
-                setIsContributor(false);
-                setHasCheckedWallet(false);
-              }}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-
         {/* Loading State - Only show during actual verification */}
         {showLoading && (
           <div className="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
@@ -201,7 +180,7 @@ export default function TokenGating({
         )}
 
         {/* Join prompt - Only show if connected but not verified and not loading */}
-        {connected && !isEnabled && !showLoading && !error && (
+        { connected && !isEnabled && !showLoading && (
           <div className="text-center p-4 bg-amber-100 rounded-lg mb-6">
             <h2 className="text-xl font-semibold mb-2">
               Join us to participate
@@ -226,7 +205,7 @@ export default function TokenGating({
               <Badge variant="secondary" className="mb-4">
                 {govAction.category}
               </Badge>
-              <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
+              <h1 className="text-xl font-bold mb-4">{govAction.title}</h1>
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <Link
                   href={`https://gov.tools/governance_actions/${govAction.id}`}

@@ -4,6 +4,7 @@ import type { GovActionType, GovAction, Vote } from "@prisma/client";
 
 export interface GovActionWithResults {
   id: string;
+  title: string | null;
   category: string;
   votingDeadline: string;
   currentResults: {
@@ -94,6 +95,7 @@ export const getVotePendingGovActions = cache(async (): Promise<GovActionWithRes
 
         return {
           id: govAction.id,
+          title: govAction.title || null,
           category: formatCategoryName(govAction.category),
           votingDeadline: govAction.votingDeadline.toISOString().split("T")[0],
           currentResults: {

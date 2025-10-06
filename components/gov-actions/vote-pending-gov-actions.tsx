@@ -50,7 +50,7 @@ export default function VotePendingGovActionsPage({
                               govAction.id
                             )}`}
                           >
-                            {govAction.id}
+                            {govAction.title ? govAction.title : govAction.id}
                           </Link>
                         </h3>
                         <Badge variant="outline">{govAction.category}</Badge>

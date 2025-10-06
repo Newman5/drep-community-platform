@@ -239,3 +239,63 @@ export async function updateProposalAsVoted() {
     throw error;
   }
 }
+
+export async function getGovActionTitle(tx_hash: string, cert_index: number) {
+  try {
+    const response = await fetch(
+      `${process.env.BLOCKFROST_URL}/governance/proposals/${tx_hash}/${cert_index}/metadata`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Project_id": `${process.env.BLOCKFROST_API_KEY}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.json_metadata.body.title;
+  } catch (error) {
+    console.error("Error fetching governance action names:", error);
+    return [];
+  }
+}
+
+export async function syncGovActionTitles() {
+  try {
+    const pendingTitleUpdates = await prisma.govAction.findMany({
+      where: {
+        expired: false,
+        voted: false,
+      },
+    });
+
+    for (const action of pendingTitleUpdates) {
+      try {
+        const tx_hash = action.id.substring(0, action.id.indexOf("#"));
+        const cert_index = parseInt(
+          action.id.substring(action.id.indexOf("#") + 1)
+        );
+
+        const title = await getGovActionTitle(tx_hash, cert_index);
+        if (title) {
+          await prisma.govAction.update({
+            where: { id: action.id },
+            data: { title: title },
+          });
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching titles for governance action ${action.id}:`,
+          error
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error syncing governance action names:", error);
+  }
+}

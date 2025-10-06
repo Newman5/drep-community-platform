@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import {
+  syncGovActionTitles,
   updateAllProposals,
   updateExpiredProposals,
   updateProposalAsVoted,
@@ -45,6 +46,15 @@ export async function runGovActionsUpdate(): Promise<UpdateResult> {
       console.log('✓ Updated voted proposals');
     } catch (error) {
       const errorMsg = `Failed to update voted proposals: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      console.error(errorMsg);
+      errors.push(errorMsg);
+    }
+
+    try {
+      await syncGovActionTitles();
+    console.log('✓ Synced governance action titles');
+    } catch (error) {
+      const errorMsg = `Failed to sync governance action titles: ${error instanceof Error ? error.message : 'Unknown error'}`;
       console.error(errorMsg);
       errors.push(errorMsg);
     }
