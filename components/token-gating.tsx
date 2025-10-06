@@ -200,7 +200,7 @@ export default function TokenGating({
               <Badge variant="secondary" className="mb-4">
                 {govAction.category}
               </Badge>
-              <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
+              <h1 className="text-xl font-bold mb-4">{govAction.title}</h1>
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <Link
                   href={`https://gov.tools/governance_actions/${govAction.id}`}
