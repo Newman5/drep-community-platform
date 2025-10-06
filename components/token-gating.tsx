@@ -32,7 +32,7 @@ export default function TokenGating({
 
   const accessTokenPolicy =
     "e760308d0c14096ff479ec5f2495455505feb790503903fe976c4fd2";
-  const projectId = "e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2";
+  const courseId = "7bb38a327d4580fbf5ade7516fe6ecdb4b02dfbeb11b3fed1ce83529";
 
   // Calculate days remaining with memoization
   const daysRemaining = useMemo(() => {
@@ -53,7 +53,7 @@ export default function TokenGating({
   // Debounced wallet checking to prevent rapid state changes
   useEffect(() => {
     if (!isInitialized) return;
-    
+
     // Reset states when wallet disconnects
     if (!connected) {
       setAlias(null);
@@ -65,11 +65,11 @@ export default function TokenGating({
     if (connected && wallet && !hasCheckedWallet && !isLoading) {
       const checkAssets = async () => {
         setIsLoading(true);
-        
+
         try {
           // Add timeout to prevent hanging
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Verification timeout')), 10000)
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Verification timeout")), 10000)
           );
 
           const verificationPromise = (async () => {
@@ -82,49 +82,64 @@ export default function TokenGating({
             const accessToken = assets.find(
               (asset) => asset.policyId === accessTokenPolicy
             );
-            
+
             if (!accessToken) {
-              throw new Error("You do not hold the required token to access this content.");
+              throw new Error(
+                "You do not hold the required token to access this content."
+              );
             }
-            
+
             const aliasValue = hexToString(accessToken.unit.substring(62));
             setAlias(aliasValue);
-            
-            const utxo = await andamio.provider.core.globalState.getUtxoByAlias(aliasValue);
+
+            const utxo = await andamio.provider.core.globalState.getUtxoByAlias(
+              aliasValue
+            );
             const blockfrostUtxo = andamio.utils.rpcUtxoToBlockfrostUtxo(utxo);
             const datum = parseDatumCbor(blockfrostUtxo.inline_datum as string);
             const credentials = datum.fields[2].list;
-            const projectCredential = credentials.find(
+            const courseCredential = credentials.find(
               (cred: { fields: { bytes: string }[] }) =>
-                cred.fields[0].bytes === projectId
+                cred.fields[0].bytes === courseId
             );
-            
-            if (!projectCredential) {
-              throw new Error("You do not hold the required project credential.");
+
+            if (!courseCredential) {
+              throw new Error(
+                "You do not hold the required course credential."
+              );
             }
-            
+
             setIsContributor(true);
           })();
 
           await Promise.race([verificationPromise, timeoutPromise]);
         } catch (err) {
-          console.error('Token verification failed:', err);
+          console.error("Token verification failed:", err);
         } finally {
           setIsLoading(false);
           setHasCheckedWallet(true);
         }
       };
-      
+
       // Debounce the check to prevent rapid calls
       const timer = setTimeout(checkAssets, 300);
       return () => clearTimeout(timer);
     }
-  }, [connected, wallet, accessTokenPolicy, projectId, hasCheckedWallet, isLoading, isInitialized]);
+  }, [
+    connected,
+    wallet,
+    accessTokenPolicy,
+    courseId,
+    hasCheckedWallet,
+    isLoading,
+    isInitialized,
+  ]);
 
   // Stable derived states to prevent flickering
   const isEnabled = isContributor && alias;
   const showWalletPrompt = isInitialized && !connected;
-  const showLoading = isInitialized && connected && (isLoading || !hasCheckedWallet);
+  const showLoading =
+    isInitialized && connected && (isLoading || !hasCheckedWallet);
   const showContent = isInitialized && connected;
 
   // Don't render anything until initialized to prevent flash
@@ -175,20 +190,20 @@ export default function TokenGating({
         )}
 
         {/* Join prompt - Only show if connected but not verified and not loading */}
-        { connected && !isEnabled && !showLoading && (
+        {connected && !isEnabled && !showLoading && (
           <div className="text-center p-4 bg-amber-100 rounded-lg mb-6">
             <h2 className="text-xl font-semibold mb-2">
               Join us to participate
             </h2>
             <p className="text-sm">
-              Contributors to{" "}
+              Completion of{" "}
               <Link
-                href="https://app.andamio.io/project/e0d1a30007bbbc2e4d3c9eb4ab2a5da0a1cd99f32928d1dae1e961e2"
+                href="https://app.andamio.io/course/7bb38a327d4580fbf5ade7516fe6ecdb4b02dfbeb11b3fed1ce83529"
                 className="text-blue-500"
               >
-                <i>Sustain and Maintain Gimbalabs</i>
+                <i>Getting Started at Gimbalabs</i>
               </Link>{" "}
-              can participate in voting.
+              course will grant you access to voting.
             </p>
           </div>
         )}
@@ -211,8 +226,10 @@ export default function TokenGating({
                   <LinkIcon className="h-4 w-4" /> GovTool
                 </Link>
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" /> 
-                  {isExpired ? 'Voting ended' : `${daysRemaining} days remaining`}
+                  <Clock className="h-4 w-4" />
+                  {isExpired
+                    ? "Voting ended"
+                    : `${daysRemaining} days remaining`}
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
@@ -242,9 +259,13 @@ export default function TokenGating({
                     </p>
                   </div>
                 ) : showContent ? (
-                  <div className={`transition-opacity duration-300 ${
-                    !isEnabled && !showLoading ? "opacity-50 pointer-events-none" : "opacity-100"
-                  }`}>
+                  <div
+                    className={`transition-opacity duration-300 ${
+                      !isEnabled && !showLoading
+                        ? "opacity-50 pointer-events-none"
+                        : "opacity-100"
+                    }`}
+                  >
                     <VoteForm
                       govActionId={govAction.id}
                       existingVote={existingVote}
