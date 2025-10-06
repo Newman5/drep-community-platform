@@ -1,0 +1,70 @@
+/* Anti-flicker CSS for governance actions pages */
+
+/* Prevent layout shifts during loading */
+.gov-action-container {
+  min-height: 100vh;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Stable dimensions for main content */
+.gov-action-content {
+  min-height: 600px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Smooth wallet connection state changes */
+.wallet-connection {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Prevent flicker in title changes */
+.gov-action-title {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Smooth loading state transitions */
+.loading-skeleton {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Prevent form jumping */
+.vote-form-container {
+  min-height: 400px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Smooth alert transitions */
+.alert-container {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Stable button states */
+.wallet-button {
+  min-width: 150px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Prevent content jumping during state changes */
+.governance-main {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
