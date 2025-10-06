@@ -1,6 +1,5 @@
 "use client";
 import { Suspense } from "react";
-import { Metadata } from "next";
 import CommunityRationales from "@/components/community-rationales";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,22 +24,6 @@ function RationalesLoading() {
                 <Skeleton className="h-16 w-full" />
               </div>
             ))}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-}
-
-function RationalesError() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        <Card>
-          <CardContent className="p-12 text-center">
-            <p className="text-lg text-muted-foreground">
-              Failed to load community rationales. Please try refreshing the page.
-            </p>
           </CardContent>
         </Card>
       </div>

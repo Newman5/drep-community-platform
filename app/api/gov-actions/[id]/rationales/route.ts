@@ -10,7 +10,7 @@ export async function GET(
     const govActionId = decodeURIComponent(id);
     const data = await getRationales(govActionId); // { rationales: [{ choice, rationale }] }
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to load rationales" },
       { status: 500 }

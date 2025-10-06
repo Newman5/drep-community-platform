@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { prisma } from "./prisma";
-import type { GovActionType, GovAction, Vote } from "@prisma/client";
+import type { GovActionType } from "@prisma/client";
 
 export interface GovActionWithResults {
   id: string;
@@ -15,10 +15,6 @@ export interface GovActionWithResults {
   };
   daysRemaining: number;
 }
-
-type GovActionWithVotes = GovAction & {
-  votes: Vote[];
-};
 
 // Cache the expensive database query
 export const getVotePendingGovActions = cache(async (): Promise<GovActionWithResults[]> => {

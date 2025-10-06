@@ -23,11 +23,10 @@ export default function TokenGating({
   totalVotes?: number;
   isExpired?: boolean;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isContributor, setIsContributor] = useState(false);
   const [alias, setAlias] = useState<string | null>(null);
-  const [isContributor, setIsContributor] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasCheckedWallet, setHasCheckedWallet] = useState<boolean>(false);
+  const [hasCheckedWallet, setHasCheckedWallet] = useState(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const { connected, wallet } = useWallet();
 
@@ -59,7 +58,6 @@ export default function TokenGating({
     if (!connected) {
       setAlias(null);
       setIsContributor(false);
-      setError(null);
       setHasCheckedWallet(false);
       return;
     }
@@ -67,7 +65,6 @@ export default function TokenGating({
     if (connected && wallet && !hasCheckedWallet && !isLoading) {
       const checkAssets = async () => {
         setIsLoading(true);
-        setError(null);
         
         try {
           // Add timeout to prevent hanging
@@ -112,7 +109,6 @@ export default function TokenGating({
           await Promise.race([verificationPromise, timeoutPromise]);
         } catch (err) {
           console.error('Token verification failed:', err);
-          setError(err instanceof Error ? err.message : 'Verification failed');
         } finally {
           setIsLoading(false);
           setHasCheckedWallet(true);
@@ -129,7 +125,6 @@ export default function TokenGating({
   const isEnabled = isContributor && alias;
   const showWalletPrompt = isInitialized && !connected;
   const showLoading = isInitialized && connected && (isLoading || !hasCheckedWallet);
-  const showVerificationError = error && hasCheckedWallet;
   const showContent = isInitialized && connected;
 
   // Don't render anything until initialized to prevent flash
@@ -205,7 +200,7 @@ export default function TokenGating({
               <Badge variant="secondary" className="mb-4">
                 {govAction.category}
               </Badge>
-              <h1 className="text-xl font-bold mb-4">{govAction.title}</h1>
+              <h1 className="text-xl font-bold mb-4">{govAction.id}</h1>
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <Link
                   href={`https://gov.tools/governance_actions/${govAction.id}`}

@@ -13,7 +13,7 @@ export default function NotFound() {
               <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
               <h1 className="text-3xl font-bold mb-4">Governance Action Not Found</h1>
               <p className="text-lg text-muted-foreground mb-8">
-                The governance action you're looking for doesn't exist or may have been removed.
+                The governance action you&apos;re looking for doesn&apos;t exist or may have been removed.
               </p>
               <div className="space-y-4">
                 <Button asChild>
