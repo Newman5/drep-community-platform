@@ -26,15 +26,22 @@ function generateEmbedsFromUnvotedProposals(unvotedProposals: any[], maxProposal
 
   const embeds: any[] = [];
   const limitedProposals = unvotedProposals.slice(0, maxProposals);
+
+  console.log(`what's at limitedProposal?`, limitedProposals[0]);
+  console.log(`what's at limitedProposal.json_metadata?`, limitedProposals[0].json_metadata);
+  console.log(`what's at limitedProposal.json_metadata.body?`, limitedProposals[0].json_metadata.body);
+  console.log(`what's at limitedProposal.json_metadata.body.title?`, limitedProposals[0].json_metadata.body.title);
   limitedProposals.forEach((proposal, index) => {
     embeds.push({
-      title: `⏳ Unvoted Proposal #${index + 1}`,
+      //use title from unvotedProposals.json_metadata.body.title if exists
+      title: proposal.json_metadata?.body?.title || `⏳ Unvoted Proposal #${index + 1}`,
       fields: [
         { name: "Transaction Hash", value: `\`${proposal.tx_hash.substring(0, 16)}...\``, inline: true },
         { name: "Certificate Index", value: proposal.cert_index.toString(), inline: true },
         { name: "Governance Action", value: proposal.governance_type || "Unknown", inline: true },
         { name: "Expiry Epoch", value: proposal.expiration?.toString() || "Unknown", inline: true },
         { name: "GovTool", value: `[Link](https://gov.tools/governance_actions/${proposal.tx_hash}#${proposal.cert_index})`, inline: true },
+        { name: "Portal", value: `[Link](https://drep.gimbalabs.com/proposals/${proposal.tx_hash}%23${proposal.cert_index})`, inline: true },
       ],
       color: 0xe67e22,
       timestamp: new Date().toISOString(),
