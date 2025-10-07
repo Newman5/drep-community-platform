@@ -108,7 +108,7 @@ export async function getProposalByTxHashAndCertIndex(txHash: string, certIndex:
     }
 
     const data = await response.json();
-    console.log(`✅ Found proposal: ${txHash}/${certIndex}`);
+    console.log(`✅ Found proposal without metadata: ${txHash}/${certIndex}`);
     return data;
 
   } catch (error) {
@@ -158,9 +158,24 @@ export async function getPendingProposalsFromAPI(): Promise<any[]> {
         );
         
         if (detailedProposal && isPendingProposal(detailedProposal)) {
+          try {
+            const metadata = await getProposalByTxHashAndCertIndexwithMetadata(
+              basicProposal.tx_hash,
+              basicProposal.cert_index
+            );
+            detailedProposal.json_metadata = metadata;
+          } catch (err) {
+            console.warn(
+              `⚠️ No metadata for ${basicProposal.tx_hash}/${basicProposal.cert_index}, with ${err}`
+            );
+          }
+
           pendingProposals.push(detailedProposal);
-          console.log(`✅ Found pending: ${basicProposal.tx_hash}/${basicProposal.cert_index}`);
+          console.log(
+            `✅ Found pending: ${basicProposal.tx_hash}/${basicProposal.cert_index}`
+          );
         }
+
         
         // Small delay to be respectful to API
         if (i < basicProposals.length - 1) {

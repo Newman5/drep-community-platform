@@ -2,7 +2,7 @@
  * Gimbalabs DRep utilities for fetching voting information
  */
 
-import { getPendingProposalsFromAPI, getProposalByTxHashAndCertIndex } from './get-proposals';
+import { getPendingProposalsFromAPI, getProposalByTxHashAndCertIndex, getProposalByTxHashAndCertIndexwithMetadata } from './get-proposals';
  
 
 const GIMBALABS_DREP_ID = 'drep1taxuxp3f9yvw5txzssxx54n6qy73r9ecc40c5mx4wthuw3r3mj6';
@@ -60,32 +60,44 @@ export async function pendingProposalGimbalabsDrepHasNotVotedYet(): Promise<any[
     // Get pending proposals and DRep votes in parallel
     const [pendingProposals, drepVotes] = await Promise.all([
       getPendingProposalsFromAPI(),
-      getGimbalabsDrepVotes()
+      getGimbalabsDrepVotes(),
     ]);
 
     console.log(`📋 Found ${pendingProposals.length} pending proposals`);
     console.log(`🗳️ Found ${drepVotes.length} DRep votes`);
 
     // Create a set of transaction hashes that the DRep has voted on
-    const votedTxHashes = new Set(drepVotes.map(vote => vote.tx_hash));
+    const votedTxHashes = new Set(drepVotes.map((vote) => vote.tx_hash));
 
     // Filter pending proposals to find those not voted on
-    const unvotedProposals = pendingProposals.filter(proposal => {
+    const unvotedProposals = pendingProposals.filter((proposal) => {
       const proposalTxHash = proposal.tx_hash;
       return !votedTxHashes.has(proposalTxHash);
     });
     // call API to get details for each unvoted proposal
-    const detailedUnvotedProposals = await Promise.all(unvotedProposals.map(async (proposal) => {
-      const details = await getProposalByTxHashAndCertIndex(proposal.tx_hash, proposal.cert_index);
-      return details || proposal; // fallback to original if details not found
-    }));
-    //help me out here.  I need to return a variable called unvotedProposals that is an array of proposals with details
-    //I don't want to change the name of the variable because it's used in other places
-    // is there a way to do this without changing the name of unvotedProposals?
-  // or I can just return detailedUnvotedProposals and change the name in other places
-    console.log(`📊 Found ${detailedUnvotedProposals.length} pending proposals (with details) that Gimbalabs DRep has not voted on yet`);
+    const detailedUnvotedProposals = await Promise.all(
+      unvotedProposals.map(async (proposal) => {
+        const details = await getProposalByTxHashAndCertIndexwithMetadata(
+          //what if this fails or returns incomplete data? return null 
+          proposal.tx_hash,
+          proposal.cert_index
+        );
+        return details || proposal; // fallback to original if details not found
+      })
+    );
 
-    return detailedUnvotedProposals;
+    // Replace contents of the original array so the variable name remains the same
+    unvotedProposals.splice(
+      0,
+      unvotedProposals.length,
+      ...detailedUnvotedProposals
+    );
+
+    console.log(
+      `📊 Found ${unvotedProposals.length} pending proposals (with details) that Gimbalabs DRep has not voted on yet`
+    );
+    console.log('Unvoted Proposals:', unvotedProposals);
+    return unvotedProposals;
   } catch (error) {
     console.error('❌ Error checking unvoted proposals:', error);
     throw error;
