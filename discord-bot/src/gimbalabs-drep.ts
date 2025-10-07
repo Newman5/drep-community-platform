@@ -83,9 +83,9 @@ export async function pendingProposalGimbalabsDrepHasNotVotedYet(): Promise<any[
     //I don't want to change the name of the variable because it's used in other places
     // is there a way to do this without changing the name of unvotedProposals?
   // or I can just return detailedUnvotedProposals and change the name in other places
-    console.log(`📊 Found ${unvotedProposals.length} pending proposals that Gimbalabs DRep has not voted on yet`);
+    console.log(`📊 Found ${detailedUnvotedProposals.length} pending proposals (with details) that Gimbalabs DRep has not voted on yet`);
 
-    return unvotedProposals;
+    return detailedUnvotedProposals;
   } catch (error) {
     console.error('❌ Error checking unvoted proposals:', error);
     throw error;
