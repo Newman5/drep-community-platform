@@ -182,4 +182,41 @@ export async function getPendingProposalsFromAPI(): Promise<any[]> {
   }
 }
 
+/**
+ * Fetches a specific proposal by transaction hash and certificate index
+ * @param txHash - Transaction hash of the proposal
+ * @param certIndex - Certificate index of the proposal
+ * @returns Promise<any | null> - The proposal details or null if not found
+ */
+export async function getProposalByTxHashAndCertIndexwithMetadata(txHash: string, certIndex: number): Promise<any | null> {
+  try {
+    const url = `${process.env.BLOCKFROST_API_URL}/governance/proposals/${txHash}/${certIndex}/metadata`;
+    
+    console.log(`Fetching proposal for metadata: ${txHash}/${certIndex}`);
 
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'dmtr-api-key': process.env.API_KEY as string,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 404) {
+      console.log(`Proposal ${txHash}/${certIndex} not found`);
+      return null; // Proposal not found
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(`✅ Found proposal: ${txHash}/${certIndex}`);
+    return data;
+
+  } catch (error) {
+    console.error(`Error fetching proposal ${txHash}/${certIndex}:`, error);
+    throw new Error(`Failed to fetch proposal ${txHash}/${certIndex}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
