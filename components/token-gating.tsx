@@ -34,7 +34,7 @@ export default function TokenGating({
     "e760308d0c14096ff479ec5f2495455505feb790503903fe976c4fd2";
   const courseId = "7bb38a327d4580fbf5ade7516fe6ecdb4b02dfbeb11b3fed1ce83529";
 
-  // Calculate days remaining with memoization
+  // Calculate days remaining with memorization
   const daysRemaining = useMemo(() => {
     const now = new Date();
     const deadline = new Date(govAction.votingDeadline);

@@ -7,6 +7,7 @@ import {
   XCircle,
   MinusCircle,
   LinkIcon,
+  Hourglass,
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -61,6 +62,21 @@ export default function VotePendingGovActionsPage({
                           >
                             <LinkIcon className="h-4 w-4" /> GovTool
                           </Link>
+                        </Badge>
+                        <Badge className="bg-green-900">
+                          <Hourglass className="h-4 w-4" />
+                          {new Date(govAction.votingDeadline).toLocaleString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                              // timeZoneName: "short",
+                            }
+                          )}
                         </Badge>
                       </div>
                     </div>
