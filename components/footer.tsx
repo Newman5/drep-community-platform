@@ -58,7 +58,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="https://www.gimbalabs.com/calendar" className="text-muted-foreground hover:text-foreground transition-colors">
                   Events
                 </Link>
               </li>
@@ -80,7 +80,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="https://pool.pm/dddce8834df02109524aeb5afa0fd820fc29920eca91a63551ecc26a" className="text-muted-foreground hover:text-foreground transition-colors">
                   Delegate to GMBL stakepool
                 </Link>
               </li>
