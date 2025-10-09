@@ -64,21 +64,43 @@ export default function VotePendingGovActionsPage({
                             <LinkIcon className="h-4 w-4" /> GovTool
                           </Link>
                         </Badge>
-                        <Badge className="bg-green-900">
-                          <Hourglass className="h-4 w-4" />
-                          {subDays(
-                            new Date(govAction.votingDeadline),
-                            5
-                          ).toLocaleString(undefined, {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "2-digit",
-                            hour12: true,
-                            // timeZoneName: "short",
-                          })}
-                        </Badge>
+                        {(() => {
+                          const deadline = new Date(govAction.votingDeadline);
+                          const deadlineMinus5 = subDays(deadline, 5);
+                          const nowMs = Date.now();
+
+                          const isExpiringSoon =
+                            nowMs > deadlineMinus5.getTime();
+
+                          return (
+                            <Badge
+                              className={`flex items-center gap-2 ${
+                                isExpiringSoon ? "bg-red-900" : "bg-green-900"
+                              }`}
+                            >
+                              {isExpiringSoon ? (
+                                <>
+                                  <Clock className="h-4 w-4" />
+                                  <span>Expiring Soon</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Hourglass className="h-4 w-4" />
+                                  <time dateTime={deadlineMinus5.toISOString()}>
+                                    {deadlineMinus5.toLocaleString(undefined, {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </time>
+                                </>
+                              )}
+                            </Badge>
+                          );
+                        })()}
                       </div>
                     </div>
 
