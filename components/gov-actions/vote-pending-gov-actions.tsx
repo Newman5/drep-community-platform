@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { GovActionWithResults } from "@/lib/gov-actions";
+import { subDays } from "date-fns";
 
 interface VotePendingGovActionsPageProps {
   votePendingGovActions: GovActionWithResults[];
@@ -65,18 +66,18 @@ export default function VotePendingGovActionsPage({
                         </Badge>
                         <Badge className="bg-green-900">
                           <Hourglass className="h-4 w-4" />
-                          {new Date(govAction.votingDeadline).toLocaleString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "2-digit",
-                              hour12: true,
-                              // timeZoneName: "short",
-                            }
-                          )}
+                          {subDays(
+                            new Date(govAction.votingDeadline),
+                            5
+                          ).toLocaleString(undefined, {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                            // timeZoneName: "short",
+                          })}
                         </Badge>
                       </div>
                     </div>
