@@ -47,12 +47,23 @@ export function UpdateGovActions() {
 
     try {
       await runGovActionsUpdate();
+
+      const now = new Date();
+
+      // Store new timestamp in both React state and localStorage
       setStatus((prev) => ({
         ...prev,
         loading: false,
-        lastUpdated: new Date(),
+        lastUpdated: now,
         success: true,
       }));
+
+      try {
+        localStorage.setItem("govActions:lastUpdated", String(now.getTime()));
+      } catch (err) {
+        console.warn("Failed to write to localStorage:", err);
+      }
+
       router.refresh();
 
       // Hide success message after 3 seconds

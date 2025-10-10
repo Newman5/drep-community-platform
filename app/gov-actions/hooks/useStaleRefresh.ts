@@ -8,19 +8,24 @@ const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 type Options = {
   /** If true, when there's no timestamp (first run / cleared storage), run immediately once. */
   runIfNeverUpdated?: boolean;
-  /** localStorage key used to persist lastUpdated. Use a unique key per feature. */
+  /** localStorage key to READ lastUpdated from (updateData writes it). */
   storageKey?: string;
 };
 
+/**
+ * Schedules updateData to run exactly 6h after the last successful update.
+ * - Reads lastUpdated from state, or falls back to localStorage[storageKey].
+ * - Does NOT write to localStorage (persistence is handled in updateData()).
+ */
 export function useStaleRefresh(
   lastUpdated: Date | null,
   loading: boolean,
   updateData: () => void,
   opts: Options = {}
 ) {
-  const { runIfNeverUpdated = true, storageKey = "lastUpdated" } = opts;
+  const { runIfNeverUpdated = true, storageKey = "govActions:lastUpdated" } = opts;
 
-  // Refs to avoid re-scheduling timers when these change
+  // Keep latest values without rescheduling timers on every render
   const loadingRef = useRef(loading);
   const updateRef = useRef(updateData);
   const timerRef = useRef<number | null>(null);
@@ -33,18 +38,6 @@ export function useStaleRefresh(
     updateRef.current = updateData;
   }, [updateData]);
 
-  // Persist to localStorage when a new lastUpdated arrives
-  useEffect(() => {
-    if (!storageKey) return;
-    if (lastUpdated) {
-      try {
-        localStorage.setItem(storageKey, String(lastUpdated.getTime()));
-      } catch {
-        // ignore storage errors (private mode, quota, etc.)
-      }
-    }
-  }, [lastUpdated, storageKey]);
-
   // Read effective lastUpdated (state first, otherwise localStorage)
   const getEffectiveLastUpdated = useCallback((): number | null => {
     if (lastUpdated) return lastUpdated.getTime();
@@ -56,13 +49,13 @@ export function useStaleRefresh(
         return Number.isFinite(n) ? n : null;
       }
     } catch {
-      // ignore
+      // ignore storage errors (private mode, quota, etc.)
     }
     return null;
   }, [lastUpdated, storageKey]);
 
   useEffect(() => {
-    // Clear any existing timer
+    // clear any previous timer
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -73,7 +66,7 @@ export function useStaleRefresh(
     // If we don't have a timestamp yet
     if (last == null) {
       if (runIfNeverUpdated && !loadingRef.current) {
-        // Fire once immediately, then exit (will get a timestamp after success)
+        // fire once immediately; updateData will set state and write localStorage
         updateRef.current();
       }
       return;
@@ -89,11 +82,9 @@ export function useStaleRefresh(
       }
     }, delay);
 
-    // Cleanup on deps change/unmount
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-
     // Intentionally exclude `loading`/`updateData` to keep scheduling stable.
   }, [getEffectiveLastUpdated, runIfNeverUpdated]);
 }
