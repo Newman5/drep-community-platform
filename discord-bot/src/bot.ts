@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 import cron from "node-cron";
 import express from "express"; // 👈 add express
-import { pendingProposalGimbalabsDrepHasNotVotedYet } from "./gimbalabs-drep";
+import { getProposalsFromAPI } from "./get-proposals";
 
 // Load from environment variables
 const TOKEN = process.env.DISCORD_TOKEN as string;
@@ -14,7 +14,7 @@ if (!TOKEN || !CHANNEL_ID) {
 /**
  * Generate Discord embeds from already-fetched unvoted proposals data
  */
-function generateEmbedsFromUnvotedProposals(unvotedProposals: any[], maxProposals: number = 10): any[] {
+function generateEmbeds(unvotedProposals: any[], maxProposals: number = 10): any[] {
   if (unvotedProposals.length === 0) {
     return [{
       title: "✅ All Caught Up!",
