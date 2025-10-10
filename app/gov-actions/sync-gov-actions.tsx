@@ -69,8 +69,11 @@ export function UpdateGovActions() {
     }
   }, [status.loading, router]);
 
-  // Auto-refresh 6 hours after last update
-  useStaleRefresh(status.lastUpdated, status.loading, updateData);
+  // Auto-refresh 6 hours after last update using local storage
+  useStaleRefresh(status.lastUpdated, status.loading, updateData, {
+    runIfNeverUpdated: true, // first-time immediate run
+    storageKey: "govActions:lastUpdated", // per-feature key
+  });
 
   // Don't render until initialized to prevent flash
   if (!isInitialized) {
