@@ -81,11 +81,11 @@ export default function VotePendingGovActionsPage({
                               {isExpiringSoon ? (
                                 <>
                                   <Clock className="h-4 w-4" />
-                                  <span>Expiring Soon</span>
+                                  <span>Waiting for Submission</span>
                                 </>
                               ) : (
                                 <>
-                                  <Hourglass className="h-4 w-4" />
+                                  <Clock className="h-4 w-4" />
                                   <time dateTime={deadlineMinus5.toISOString()}>
                                     {deadlineMinus5.toLocaleString(undefined, {
                                       year: "numeric",

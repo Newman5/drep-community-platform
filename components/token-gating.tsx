@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import VoteForm from "@/components/vote-form";
 import { CardanoWalletWrapper } from "./cardano-wallet-wrapper";
 import type { GovAction, Vote } from "@prisma/client";
+import { subDays } from "date-fns";
 
 export default function TokenGating({
   govAction,
@@ -38,8 +39,8 @@ export default function TokenGating({
   const daysRemaining = useMemo(() => {
     const now = new Date();
     const deadline = new Date(govAction.votingDeadline);
-    const timeDiff = deadline.getTime() - now.getTime();
-    return Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
+    const deadlineMinus5 = subDays(deadline, 5);
+    return deadlineMinus5;
   }, [govAction.votingDeadline]);
 
   // Initialize component to prevent initial flicker
@@ -227,9 +228,20 @@ export default function TokenGating({
                 </Link>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  {isExpired
-                    ? "Voting ended"
-                    : `${daysRemaining} days remaining`}
+                  {isExpired ? (
+                    "Waiting for Submission"
+                  ) : (
+                    <time dateTime={daysRemaining.toISOString()}>
+                      {daysRemaining.toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </time>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
