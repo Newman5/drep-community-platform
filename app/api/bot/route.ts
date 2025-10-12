@@ -11,13 +11,13 @@ export async function GET() {
       voted: false
     }
   })
-  console.log('[GET /api/gov-actions] pendingVotesGovActions', pendingVotesGovActions)
+  console.log('[GET /api/bot] pendingVotesGovActions', pendingVotesGovActions)
   return NextResponse.json(
     { status: 'ok', message: pendingVotesGovActions },
     { status: 200 }
   );
   } catch (error) {
-    console.error('[GET /api/gov-actions]', error);
+    console.error('[GET /api/bot]', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }
