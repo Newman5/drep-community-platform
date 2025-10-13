@@ -14,7 +14,7 @@ model GovAction {
   expired  Boolean
   voted    Boolean
 
-  votingDeadline DateTime @db.Timestamptz(3)
+  votingDeadline DateTime
 
   votes Vote[]
 }
