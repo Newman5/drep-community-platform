@@ -168,7 +168,7 @@ export default function TokenGating({
               "Verifying access..."
             ) : isEnabled ? (
               <>
-                Welcome <i>{alias}</i>, Cast your vote!
+                Welcome {alias}, Cast your vote!
               </>
             ) : showWalletPrompt ? (
               "Connect Wallet to Vote"
