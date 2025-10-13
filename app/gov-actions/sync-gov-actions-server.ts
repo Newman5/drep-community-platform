@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import {
   syncGovActionTitles,
   updateAllProposals,
-  updateExpiredProposals,
+  updateExpiredProposalsAndVotingDeadlines,
   updateProposalAsVoted,
 } from "@/lib/sync-gov-actions";
 
@@ -33,7 +33,7 @@ export async function runGovActionsUpdate(): Promise<UpdateResult> {
     }
 
     try {
-      await updateExpiredProposals();
+      await updateExpiredProposalsAndVotingDeadlines();
       console.log('✓ Updated expired proposals');
     } catch (error) {
       const errorMsg = `Failed to update expired proposals: ${error instanceof Error ? error.message : 'Unknown error'}`;

@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { GovActionType } from "@prisma/client";
-import { BlockfrostProvider, TxParser } from "@meshsdk/core";
+import { BlockfrostProvider, SLOT_CONFIG_NETWORK, slotToBeginUnixTime, TxParser } from "@meshsdk/core";
 import { CSLSerializer } from "@meshsdk/core-csl";
 
 const fetcher = new BlockfrostProvider(`${process.env.BLOCKFROST_API_KEY}`);
@@ -61,7 +61,7 @@ export async function updateAllProposals() {
   }
 }
 
-export async function updateExpiredProposals() {
+export async function updateExpiredProposalsAndVotingDeadlines() {
   try {
     const currentEpochResponse = await fetch(
       `${process.env.BLOCKFROST_URL}/epochs/latest`,
@@ -122,12 +122,13 @@ export async function updateExpiredProposals() {
       } = await response.json();
 
       // If the current epoch is greater than or equal to the expiration epoch, mark as expired
-      if (currentEpoch >= data.expiration) {
         await prisma.govAction.update({
           where: { id: proposal.id },
-          data: { expired: true },
+          data: {
+            expired: currentEpoch >= data.expiration,
+            votingDeadline: epochToDate(data.expiration)
+          },
         });
-      }
     }
   } catch (error) {
     console.error("Error updating expired proposals:", error);
@@ -298,4 +299,13 @@ export async function syncGovActionTitles() {
   } catch (error) {
     console.error("Error syncing governance action names:", error);
   }
+}
+
+export function epochToDate(epoch: number): Date {
+    const slotConfig = SLOT_CONFIG_NETWORK["mainnet"];
+    const epochStartTime = slotConfig.zeroTime + (epoch - slotConfig.startEpoch) * slotConfig.epochLength * 1000;
+    const slot = slotConfig.zeroSlot + Math.floor((epochStartTime - slotConfig.zeroTime) / slotConfig.slotLength);
+    const unixTimestamp = slotToBeginUnixTime(Number(slot), slotConfig);
+    const date = new Date(unixTimestamp);
+    return date
 }
