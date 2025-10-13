@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 import cron from "node-cron";
-import express from "express"; // 👈 add express
+import express from "express"; 
 import { getProposalsFromAPI } from "./get-proposals";
 
 // Load from environment variables
@@ -25,21 +25,45 @@ function generateEmbeds(unvotedProposals: any[], maxProposals: number = 10): any
   }
 
   const embeds: any[] = [];
-  const limitedProposals = unvotedProposals.slice(0, maxProposals);
-  limitedProposals.forEach((proposal, index) => {
-    embeds.push({
-      title: `⏳ Unvoted Proposal #${index + 1}`,
-      fields: [
-        { name: "Transaction Hash", value: `\`${proposal.tx_hash.substring(0, 16)}...\``, inline: true },
-        { name: "Certificate Index", value: proposal.cert_index.toString(), inline: true },
-        { name: "Governance Action", value: proposal.governance_type || "Unknown", inline: true },
-        { name: "Expiry Epoch", value: proposal.expiration?.toString() || "Unknown", inline: true },
-        { name: "GovTool", value: `[Link](https://gov.tools/governance_actions/${proposal.tx_hash}#${proposal.cert_index})`, inline: true },
-      ],
-      color: 0xe67e22,
-      timestamp: new Date().toISOString(),
+
+  const colors = {
+    new_constitution: 0x2ecc71,
+    info_action: 0xe67e22,
+    parameter_change: 0x3498db,
+  };
+  
+    unvotedProposals.forEach((proposal, index) => {
+      embeds.push({
+        title: `🗳️ ${proposal.title || 'Untitled Proposal'}`,
+        description: `Category: **${proposal.category}**`,
+        fields: [
+          {
+            name: 'Voting Deadline',
+            value: new Date(proposal.votingDeadline).toLocaleString('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }),
+            inline: false,
+          },
+          {
+            name: 'Proposal ID',
+            value: `\`${proposal.id.slice(0, 12)}...\``,
+            inline: true,
+          },
+          {
+            name: 'GovTool Link',
+            value: `[Open in GovTool](https://gov.tools/governance_actions/${proposal.id})`,
+            inline: false,
+          },
+        ],
+        color: 0x5865f2,
+        footer: {
+          text: `Unvoted proposal #${index + 1}`,
+        },
+        timestamp: new Date().toISOString(),
+      });
     });
-  });
+
 
   return embeds;
 }
@@ -55,7 +79,7 @@ async function checkProposalsAndSend(client: Client) {
       return;
     }
 
-    const unvotedProposals = await pendingProposalGimbalabsDrepHasNotVotedYet();
+    const unvotedProposals = await getProposalsFromAPI();
 
     if (unvotedProposals.length === 0) {
       console.log("✅ All caught up.");
@@ -65,7 +89,7 @@ async function checkProposalsAndSend(client: Client) {
 
       await channel.send(`🚨 **VOTES NEEDED**: ${unvotedProposals.length} proposal(s) require Gimbalabs DRep votes!`);
 
-      const embeds = generateEmbedsFromUnvotedProposals(unvotedProposals, 10);
+      const embeds = generateEmbeds(unvotedProposals, 10);
 
       for (const embed of embeds) {
         await channel.send({ embeds: [embed] });
