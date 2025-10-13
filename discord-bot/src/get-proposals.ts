@@ -1,13 +1,25 @@
 import fetch from 'node-fetch';
-import type { GovAction } from '@prisma/client';
+
+
 
 /**
- * Type returned by the /api/bot (or /api/gov-actions) route.
- * 'message' contains the list of GovAction records.
+ * Minimal local type that matches your /api/bot JSON shape
+ */
+export interface GovAction {
+  id: string
+  title: string | null
+  category: string
+  expired: boolean
+  voted: boolean
+  votingDeadline: string // ISO string from API
+}
+
+/**
+ * Expected structure of the API response
  */
 interface ApiResponse {
-  status: 'ok' | 'error';
-  message: GovAction[] | string;
+  status: 'ok' | 'error'
+  message: GovAction[] | string
 }
 
 const API_URL = process.env.API_URL as string;

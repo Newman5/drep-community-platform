@@ -61,11 +61,10 @@ graph TD
 
 ## 🧩 Environment Setup
 
-Create a `.env` file in the project root with:
+Create a `.env` file in the project root with based on the .env.sample file:
 
 ```bash
 DATABASE_URL="postgresql://postgres:<YOUR_PASSWORD>@db.<your-project-ref>.supabase.co:5432/postgres"
-NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 BLOCKFROST_API_URL="https://cardano-mainnet.blockfrost.io/api/v0"
 BLOCKFROST_API_KEY="your_blockfrost_api_key"
 ```
@@ -159,6 +158,14 @@ DATABASE_URL="postgresql://postgres:<YOUR_PASSWORD>@db.<your-project-ref>.supaba
 ---
 
 ## Learn More
+
+join our Disord - https://discord.gg/WWMBExJjHM 
+
+Contributing.md to find out about contribution
+
+Gimbalabs.com to find out more about Gimbalabs
+
+
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
