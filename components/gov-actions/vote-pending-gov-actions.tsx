@@ -7,12 +7,14 @@ import {
   XCircle,
   MinusCircle,
   LinkIcon,
+  Hourglass,
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { GovActionWithResults } from "@/lib/gov-actions";
+import { subDays } from "date-fns";
 
 interface VotePendingGovActionsPageProps {
   votePendingGovActions: GovActionWithResults[];
@@ -62,6 +64,43 @@ export default function VotePendingGovActionsPage({
                             <LinkIcon className="h-4 w-4" /> GovTool
                           </Link>
                         </Badge>
+                        {(() => {
+                          const deadline = new Date(govAction.votingDeadline);
+                          const deadlineMinus5 = subDays(deadline, 5);
+                          const nowMs = Date.now();
+
+                          const isExpiringSoon =
+                            nowMs > deadlineMinus5.getTime();
+
+                          return (
+                            <Badge
+                              className={`flex items-center gap-2 ${
+                                isExpiringSoon ? "bg-red-900" : "bg-green-900"
+                              }`}
+                            >
+                              {isExpiringSoon ? (
+                                <>
+                                  <Clock className="h-4 w-4" />
+                                  <span>Waiting for Submission</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Clock className="h-4 w-4" />
+                                  <time dateTime={deadlineMinus5.toISOString()}>
+                                    {deadlineMinus5.toLocaleString(undefined, {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "numeric",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </time>
+                                </>
+                              )}
+                            </Badge>
+                          );
+                        })()}
                       </div>
                     </div>
 

@@ -93,7 +93,7 @@ export const getVotePendingGovActions = cache(async (): Promise<GovActionWithRes
           id: govAction.id,
           title: govAction.title || null,
           category: formatCategoryName(govAction.category),
-          votingDeadline: govAction.votingDeadline.toISOString().split("T")[0],
+          votingDeadline: govAction.votingDeadline.toISOString(),
           currentResults: {
             yes: yesPercentage,
             no: noPercentage,
