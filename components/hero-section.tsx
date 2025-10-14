@@ -33,7 +33,7 @@ export function HeroSection() {
             </Button>
             
             <Button variant="outline" size="lg" asChild className="text-lg px-8 py-3">
-              <Link href="https://discord.gg/YkWgGR3C">
+              <Link href="https://discord.gg/WWMBExJjHM">
                 <Users className="mr-2 h-5 w-5" />
                 Join Us
               </Link>

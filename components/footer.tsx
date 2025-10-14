@@ -68,7 +68,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="https://discord.gg/YkWgGR3C" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="https://discord.gg/WWMBExJjHM" className="text-muted-foreground hover:text-foreground transition-colors">
                   Discord
                 </Link>
               </li>
